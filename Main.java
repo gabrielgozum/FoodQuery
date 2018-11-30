@@ -23,7 +23,7 @@ public class Main extends Application{
 
 	}
 	public void start(Stage primaryStage) {
-		primaryStage.setTitle("Hello World!");
+		primaryStage.setTitle("Food Query!");
 		StackPane root = new StackPane();
 		StackPane second = new StackPane();
 		Scene scene1 = new Scene(root, 500, 500);
@@ -52,8 +52,12 @@ public class Main extends Application{
 		ObservableList<String> items =FXCollections.observableArrayList (
 		    "Beans", "Burgers", "Fries", "Nuggets");
 		list.setItems(items);
+		ListView<String> mealList = new ListView<String>();
+		ObservableList<String> mealItems = FXCollections.observableArrayList(
+				"Burgers", "Fries", "Beer", "Fruit");
+		mealList.setItems(mealItems);
 		VB1.getChildren().addAll(analyzeMeal, list);
-		VB2.getChildren().addAll(fileInput, fileInputField);
+		VB2.getChildren().addAll(fileInput, fileInputField, mealList);
 		HB.getChildren().addAll(VB1, VB2);
 	root.getChildren().add(HB);
 	primaryStage.setScene(scene1);
