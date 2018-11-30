@@ -62,11 +62,17 @@ public class Main extends Application{
 		list.setPrefHeight(70);
 		VB1.getChildren().addAll(analyzeMeal, list);
 		VB1.setSpacing(10);
-		VB3.getChildren().addAll(fileInput, fileInputField);
-		HB.getChildren().addAll(VB1, VB2, VB3);
 	//root.getChildren().add(HB);
-	borderPanel.setLeft(VB1);
-	root.getChildren().add(borderPanel);
+
+		ListView<String> mealList = new ListView<String>();
+		ObservableList<String> mealItems = FXCollections.observableArrayList(
+				"Burgers", "Fries", "Beer", "Fruit");
+		mealList.setItems(mealItems);
+		VB2.getChildren().addAll(fileInput, fileInputField, mealList);
+		HB.getChildren().addAll(VB1, VB2, VB3);
+		borderPanel.setLeft(VB1);
+		borderPanel.setRight(VB2);
+		root.getChildren().add(borderPanel);
 	primaryStage.setScene(scene1);
 	primaryStage.show();
 	}
