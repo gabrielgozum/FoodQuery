@@ -103,6 +103,7 @@ public class Main extends Application{
 		ObservableList<String> mealItems = FXCollections.observableArrayList(
 				"Burgers", "Fries", "Beer", "Fruit");
 		mealList.setItems(mealItems);
+
 		mealList.setPrefWidth(100);
 		mealList.setPrefHeight(150);
 		
@@ -124,6 +125,7 @@ public class Main extends Application{
 		borderPanel.setCenter(VB4);
 		root.getChildren().add(borderPanel);
 		
+
 	primaryStage.setScene(scene1);
 	primaryStage.show();
 	}
