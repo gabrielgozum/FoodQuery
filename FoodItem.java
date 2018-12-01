@@ -26,6 +26,7 @@ public class FoodItem {
     public FoodItem(String id, String name) {
         this.id = id;
         this.name = name;
+        nutrients = new HashMap<String, Double>();
     }
     
     /**
@@ -43,7 +44,6 @@ public class FoodItem {
      * @return id of the food item
      */
     public String getID() {
-        // TODO : Complete
         return this.id;
     }
     
@@ -53,7 +53,6 @@ public class FoodItem {
      * @return nutrients of the food item
      */
     public HashMap<String, Double> getNutrients() {
-        // TODO : Complete
         return nutrients; 
     }
 
