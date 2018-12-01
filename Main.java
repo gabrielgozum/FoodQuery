@@ -190,7 +190,6 @@ public class Main extends Application{
 		FHBFiber.getChildren().addAll(minFiber, fiberFilter, maxFiber);
 		FHBProtein.getChildren().addAll(minProtein, proteinFilter, maxProtein);
 		
-<<<<<<< HEAD
 		mainBorderPanel.setTop(topLabel);
 		mainBorderPanel.setLeft(VB1);
 		mainBorderPanel.setRight(VB2);
@@ -202,18 +201,6 @@ public class Main extends Application{
 		filterBorderPanel.setBottom(rootBtn);
 		filter.getChildren().add(filterBorderPanel);
 	primaryStage.setScene(mainScene);
-=======
-		
-		borderPanel.setTop(topLabel);
-		borderPanel.setLeft(VB1);
-		borderPanel.setRight(VB2);
-		borderPanel.setBottom(HB);
-		borderPanel.setCenter(VB4);
-		root.getChildren().add(borderPanel);
-		
-
-	primaryStage.setScene(scene1);
->>>>>>> 4dd982d42b8eaef33150a54a287f34a39818c792
 	primaryStage.show();
 	}
 }
