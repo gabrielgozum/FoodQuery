@@ -1,6 +1,8 @@
 package application;
 
 
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +24,15 @@ import javafx.stage.Stage;
 public class Main extends Application{
 
 	public static void main(String[] args) {
+		
+/////////////////////// TESTING FOOD DATA ///////////////////////////////
+		FoodData foodData = new FoodData();
+		foodData.loadFoodItems("application/foodItems.txt");
+		ArrayList<FoodItem> foodList = (ArrayList<FoodItem>) foodData.getAllFoodItems();
+		for(FoodItem i : foodList)
+			System.out.println(i.getName());
+//////////////////////////////////////////////////////////////////////////
+		
 		launch(args);
 
 	}
