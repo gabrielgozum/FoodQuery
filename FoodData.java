@@ -63,7 +63,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public void addFoodItem(FoodItem foodItem) {
-        // TODO : Complete
+        foodItemList.add(foodItem);
     }
 
     /*
@@ -72,8 +72,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public List<FoodItem> getAllFoodItems() {
-        // TODO : Complete
-        return null;
+        return foodItemList;
     }
 
 
