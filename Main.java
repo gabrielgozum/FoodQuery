@@ -59,7 +59,7 @@ public class Main extends Application{
 		VB1.getChildren().addAll(analyzeMeal, list);
 		VB2.getChildren().addAll(fileInput, fileInputField, mealList);
 		HB.getChildren().addAll(VB1, VB2);
-	root.getChildren().add(HB);
+	root.getChildren().add(HB, 3 , 3);
 	primaryStage.setScene(scene1);
 	primaryStage.show();
 	}

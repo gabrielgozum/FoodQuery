@@ -24,7 +24,8 @@ public class FoodItem {
      * @param id unique id of the food item 
      */
     public FoodItem(String id, String name) {
-        // TODO : Complete
+        this.id = id;
+        this.name = name;
     }
     
     /**
@@ -33,7 +34,7 @@ public class FoodItem {
      * @return name of the food item
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -43,7 +44,7 @@ public class FoodItem {
      */
     public String getID() {
         // TODO : Complete
-        return null;
+        return this.id;
     }
     
     /**
@@ -53,7 +54,8 @@ public class FoodItem {
      */
     public HashMap<String, Double> getNutrients() {
         // TODO : Complete
-        return null;
+        HashMap<String, Double> hash = new HashMap<String, Double>();
+        hash.get();
     }
 
     /**
