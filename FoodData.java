@@ -131,6 +131,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	        		line = line + "," + j + "," + Double.toString(nutrients.get(j));
 	        	}
 	        	out.write(line);
+	        	out.newLine(); //possibly unnecessary
 	        }
 	        out.close();
         } catch (Exception e)
