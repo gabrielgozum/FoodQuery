@@ -2,6 +2,9 @@ package application;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -167,7 +170,8 @@ public class Main extends Application{
 				System.out.println("Meal analysis");
 			}
 		});
-		
+		ListView<String> foodList = new ListView<String>();
+
 		/*
 		 * When fileInputField has had a file typed in and enter has been
 		 * pressed, it will read the contents of that file and make a list of
@@ -176,9 +180,23 @@ public class Main extends Application{
 		fileInputField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				//Placeholder message until back end functionality is implemented
-				FoodData fileReadIn = new FoodData();
-				fileReadIn.loadFoodItems(fileInputField.getText());
+				FoodData fileReadIn = new FoodData();	//create FoodData object to read file
+				fileReadIn.loadFoodItems(fileInputField.getText()); //Load file in
+				//Get an observable list of FoodItems
+				ObservableList<FoodItem> foodListItems = 
+						FXCollections.observableArrayList(fileReadIn.getAllFoodItems());
+				
+				List<String> foodItemsNames = new ArrayList<String>();
+				//Get the name of each item from foodListItems and put it into separate list.
+				for(FoodItem f: foodListItems) {
+					if(!f.getName().equals("")) {	//make sure empty entries don't make it in
+						foodItemsNames.add(f.getName());
+					}
+				}
+				//Make the list of foodItemNames into an ObservableList to be displayed.
+				ObservableList<String> displayFood = FXCollections.observableArrayList(foodItemsNames);
+				Collections.sort(displayFood);	//sort the list in alphabetical order
+				foodList.setItems(displayFood);
 			}
 		});
 		/*
@@ -219,7 +237,7 @@ public class Main extends Application{
 		mealList.setPrefHeight(150);
 		
 		//Left side of the main scene
-		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, list, addFromList, filterSceneBtn);
+		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, addFromList, filterSceneBtn);
 		VB1.setSpacing(10);
 		
 		//Right side of the main scene
