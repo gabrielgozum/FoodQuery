@@ -39,9 +39,10 @@ public class Main extends Application{
 
 	}
 	public void start(Stage primaryStage) {
+		//Different BorderPanes for each scene
 		BorderPane mainBorderPanel = new BorderPane();
 		BorderPane filterBorderPanel = new BorderPane();
-
+		
 		primaryStage.setTitle("FoodQuery and Meal Analysis");
 		StackPane root = new StackPane();
 		Scene mainScene = new Scene(root, 600, 600);
@@ -72,12 +73,14 @@ public class Main extends Application{
 		HBox FHBProtein = new HBox();
 		VBox FVB1 = new VBox();
 		
-		Button analyzeMeal = new Button();
-		Button filterSceneBtn = new Button();
-		Button rootBtn = new Button();
+		//All the buttons
+		Button analyzeMeal = new Button(); 		//will calculate nutrition totals
+		Button filterSceneBtn = new Button(); 	//changes to filter scene
+		Button rootBtn = new Button();			//changes back to root
 		rootBtn.setText("Apply filters and go back");
 		filterSceneBtn.setText("Click to apply Filters");
 		
+		//Labels seen on the root scene
 		Label topLabel = new Label("FoodQuery and Meal Analysis");
 		topLabel.setFont(new Font("Arial", 30));
 		Label individualFood = new Label("Add Food Manually: ");
@@ -92,7 +95,12 @@ public class Main extends Application{
 		foodListLabel.setFont(new Font("Arial" , 15));
 		Label mealListLabel = new Label("Meal List");
 		mealListLabel.setFont(new Font("Arial" , 15));
-		Label foodFiltersLabel = new Label("Food Filters");
+		
+		//Label foodFiltersLabel = new Label("Food Filters"); it was here, don't know why,
+		//might delete later
+		
+		
+		//Labels for total nutrients
 		Label mealCalories = new Label("Total Calories: ");
 		Label mealCarbohydrates = new Label("Total Carbs: ");
 		Label mealFat = new Label("Total Fat: ");
@@ -102,6 +110,8 @@ public class Main extends Application{
 		Label addFromList = new Label("Click from list to add to meal");
 		Label removeFromMeal = new Label("Click from meal list to remove");
 		
+		
+		//Labels used on the filter scene
 		Label minimum = new Label("Minmum Value");
 		Label maximum = new Label("Maximum Value");
 		Label minMaxGap = new Label("							");	
@@ -111,6 +121,7 @@ public class Main extends Application{
 		Label fiberFilter = new Label("<= Fiber <");
 		Label proteinFilter = new Label("<= Protein <");
 		
+		//TextFields for inputting own individual foods
 		TextField foodNameField = new TextField();
 		TextField foodProteinField = new TextField();
 		TextField foodFiberField = new TextField();
@@ -118,9 +129,12 @@ public class Main extends Application{
 		TextField foodCarbsField = new TextField();
 		TextField foodFatField = new TextField();
 		TextField fileInputField = new TextField();
+		
+		//TextFields for searching in the lists
 		TextField foodListSearchBar = new TextField("Search");
 		TextField mealListSearchBar = new TextField("Search");
 		
+		//TextFields for applying filters
 		TextField minCal = new TextField();
 		TextField maxCal = new TextField();
 		TextField minCarbs = new TextField();
@@ -132,7 +146,7 @@ public class Main extends Application{
 		TextField minProtein = new TextField();
 		TextField maxProtein = new TextField();
 		
-		
+		//Boxes for adding individual FoodItems
 		nameBox.getChildren().addAll(foodName, foodNameField);
 		proteinBox.getChildren().addAll(foodProtein, foodProteinField);
 		fiberBox.getChildren().addAll(foodFiber, foodFiberField);
@@ -142,60 +156,95 @@ public class Main extends Application{
 		
 		fileInput.setText("Enter your file name");
 		analyzeMeal.setText("Click to analyze your meal");
+		
+		/*
+		 * When analyzeMeal is pressed, the total nutritional value of the meal
+		 * will be added up and displayed on the root scene.
+		 */
 		analyzeMeal.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Meal analysis");
 			}
 		});
+		
+		/*
+		 * When fileInputField has had a file typed in and enter has been
+		 * pressed, it will read the contents of that file and make a list of
+		 * FoodItems and add them to the food list on the root scene.
+		 */
 		fileInputField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				//Placeholder message until back end functionality is implemented
-				System.out.println("This is when the file would be read");
+				FoodData fileReadIn = new FoodData();
+				fileReadIn.loadFoodItems(fileInputField.getText());
 			}
 		});
+		/*
+		 * When the filterSceneBtn is pressed, the scene changes to the filter
+		 * scene where the user can input their filters accordingly.
+		 */
 		filterSceneBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				primaryStage.setScene(filterScene);
 			}
 		});
+		/*
+		 * When rootBtn is pressed, the scene changes to the main scene.
+		 * Filters will also be applied here.
+		 */
 		rootBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				primaryStage.setScene(mainScene);
 			}
 		});
+		
+		//Hard coded foodList for milestone 2
 		ListView<String> list = new ListView<String>();
 		ObservableList<String> items =FXCollections.observableArrayList (
 		   "Apples", "Avacado", "Bananas", "Beans", "Beer", "Burgers", "Fries", "Granola Bar", "Grapefruit", "Nuggets", "Pizza");
 		list.setItems(items);
 		list.setPrefWidth(100);
 		list.setPrefHeight(250);
-
+		
+		//Hard coded mealList for milestone 2
 		ListView<String> mealList = new ListView<String>();
 		ObservableList<String> mealItems = FXCollections.observableArrayList(
 				"Burgers", "Fries", "Beer", "Fruit");
 		mealList.setItems(mealItems);
-
 		mealList.setPrefWidth(100);
 		mealList.setPrefHeight(150);
 		
+		//Left side of the main scene
 		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, list, addFromList, filterSceneBtn);
 		VB1.setSpacing(10);
+		
+		//Right side of the main scene
 		VB2.getChildren().addAll(mealListLabel, mealListSearchBar, mealList, removeFromMeal, analyzeMeal);
 		VB2.setSpacing(10);
+		
+		//Used in bottom of main scene
 		VB3.getChildren().addAll(fileInput, fileInputField); 
+		
+		//Used in center of main scene (mealAnalysis)
 		VB4.getChildren().addAll(mealAnalysis, mealCalories, mealCarbohydrates, mealFat, 
 				mealFiber, mealProtein);
 		VB4.setAlignment(Pos.CENTER);
+		
+		//Used in bottom of main scene to input individual foods.
 		VB5.getChildren().addAll(individualFood, nameBox, proteinBox, fiberBox);
 		VB5.setSpacing(2);
 		VB6.getChildren().addAll(calorieBox, carbohydrateBox, fatBox);
 		VB6.setSpacing(2);
 		VB6.setAlignment(Pos.BOTTOM_CENTER);
+		
+		//Put all the bottom VBoxes together
 		HB.getChildren().addAll(VB3, VB5, VB6);
+		
+		//All of the horizontal boxes used in filters
 		FHBMinMax.getChildren().addAll(minimum, minMaxGap, maximum);
 		FHBCal.getChildren().addAll(minCal, calFilter, maxCal);
 		FHBCarb.getChildren().addAll(minCarbs, carbFilter, maxCarbs);
@@ -209,6 +258,10 @@ public class Main extends Application{
 		mainBorderPanel.setBottom(HB);
 		mainBorderPanel.setCenter(VB4);
 		root.getChildren().add(mainBorderPanel);
+		/*
+		 * Add all the horizontal boxes used in filters to the vertical box on filter
+		 * to make it look nice.
+		 */
 		FVB1.getChildren().addAll(FHBMinMax, FHBCal, FHBCarb, FHBFat, FHBFiber, FHBProtein);
 		filterBorderPanel.setCenter(FVB1);
 		filterBorderPanel.setBottom(rootBtn);
