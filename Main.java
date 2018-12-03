@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -171,7 +172,8 @@ public class Main extends Application{
 			}
 		});
 		ListView<String> foodList = new ListView<String>();
-
+		ListView<String> mealList = new ListView<String>();
+		List<String> mealListItems = new ArrayList<String>();
 		/*
 		 * When fileInputField has had a file typed in and enter has been
 		 * pressed, it will read the contents of that file and make a list of
@@ -199,6 +201,27 @@ public class Main extends Application{
 				foodList.setItems(displayFood);
 			}
 		});
+		
+		foodList.setPrefWidth(100);
+		foodList.setPrefHeight(250);
+		
+		/*
+		 * When an individual item is clicked in foodList, it adds it to mealList.
+		 * This does this by adding the clicked item to a list, then turning that list 
+		 * into an observable list to be added to the ListView object.
+		 */
+		foodList.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				mealListItems.add(foodList.getSelectionModel().getSelectedItem());
+				ObservableList<String> mealListObserve = FXCollections.observableArrayList(mealListItems);
+				mealList.setItems(mealListObserve);
+			}
+		});
+		
+		//For aesthetics
+		mealList.setPrefWidth(100);
+		mealList.setPrefHeight(150);
 		/*
 		 * When the filterSceneBtn is pressed, the scene changes to the filter
 		 * scene where the user can input their filters accordingly.
@@ -220,22 +243,12 @@ public class Main extends Application{
 			}
 		});
 		
-		//Hard coded foodList for milestone 2
-		ListView<String> list = new ListView<String>();
-		ObservableList<String> items =FXCollections.observableArrayList (
-		   "Apples", "Avacado", "Bananas", "Beans", "Beer", "Burgers", "Fries", "Granola Bar", "Grapefruit", "Nuggets", "Pizza");
-		list.setItems(items);
-		list.setPrefWidth(100);
-		list.setPrefHeight(250);
-		
 		//Hard coded mealList for milestone 2
-		ListView<String> mealList = new ListView<String>();
-		ObservableList<String> mealItems = FXCollections.observableArrayList(
-				"Burgers", "Fries", "Beer", "Fruit");
-		mealList.setItems(mealItems);
-		mealList.setPrefWidth(100);
-		mealList.setPrefHeight(150);
-		
+//		ListView<String> mealList = new ListView<String>();
+//		ObservableList<String> mealItems = FXCollections.observableArrayList(
+//				"Burgers", "Fries", "Beer", "Fruit");
+//		mealList.setItems(mealItems);
+//		
 		//Left side of the main scene
 		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, addFromList, filterSceneBtn);
 		VB1.setSpacing(10);
