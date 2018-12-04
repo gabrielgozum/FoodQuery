@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -40,31 +41,48 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public void loadFoodItems(String filePath) {
-		try {
+    	try 
+    	{
 			File file = new File(filePath);
 			Scanner input = new Scanner(file);
+			FoodItem cur = null;
+			boolean skipLine = false;
 			
 			while(input.hasNextLine()) {
 				String line = input.nextLine();
-				String[] data = line.split(",", 12);
-
-				FoodItem cur = new FoodItem(data[0], data[1]); // adds food item with id and name
-				
-				
-				for(int i = 2; i < data.length; i = i + 2)
+				try 
 				{
-					if(!data[i].isEmpty() && !data[i+1].isEmpty())
+					String[] data = line.split(",", 12);
+					skipLine = false;
+	
+					cur = new FoodItem(data[0], data[1]); // adds food item with id and name
+					
+					
+					for(int i = 2; i < data.length; i = i + 2)
 					{
-						cur.addNutrient(data[i], Double.parseDouble(data[i+1])); //add each nutrient
+							if(data[i].isEmpty() || data[i+1].isEmpty()) // check data is there
+							{
+								skipLine = true;
+							}
+							else
+							{
+								cur.addNutrient(data[i], Double.parseDouble(data[i+1])); //add each nutrient
+							}
 					}
-				}
+				} catch (Exception e) // accounts for ArrayOutOfBounds and Double.parseInt exceptions for incorrect data
+				{
+					skipLine = true;
+				} 
 				
-				foodItemList.add(cur); // adds food item to LinkedList
+				if(!skipLine)
+				{
+					foodItemList.add(cur); // adds food item to LinkedList
+				}
 			}
 			input.close();
 			
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.out.println("The file: " + filePath + " was not found"); //TODO: print an error box
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -134,9 +152,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	        	out.newLine(); //possibly unnecessary
 	        }
 	        out.close();
-        } catch (Exception e)
-        {
-        	e.getMessage();
+        } catch (IOException e) {
+        	System.out.println("The file could not be named: " + filename); //TODO: print in error box
         }
     }
 }

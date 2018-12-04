@@ -38,13 +38,15 @@ public class Main extends Application{
 	public static void main(String[] args) {
 		
 /////////////////////// TESTING FOOD DATA ///////////////////////////////
-//		FoodData foodData = new FoodData();
-//		foodData.loadFoodItems("application/foodItems.txt");
-//		ArrayList<FoodItem> foodList = (ArrayList<FoodItem>) foodData.getAllFoodItems();
-//		for(FoodItem i : foodList)
-//			System.out.println(i.getName());
-//		
-//		foodData.saveFoodItems("application/foodSaved.txt");
+/*	
+ 		FoodData foodData = new FoodData();
+		foodData.loadFoodItems("application/gabesFoodList");
+		ArrayList<FoodItem> foodList = (ArrayList<FoodItem>) foodData.getAllFoodItems();
+		for(FoodItem i : foodList)
+			System.out.println(i.getName());
+		
+		foodData.saveFoodItems("application/foodSaved.txt");
+*/
 //////////////////////////////////////////////////////////////////////////
 		
 		launch(args);

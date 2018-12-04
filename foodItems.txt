@@ -246,12 +246,5 @@
 55226d5734a170c23965eb60,ChabasoBakery_RusticCiabattaLoaf,calories,150,fat,0.5,carbohydrate,31,fiber,1,protein,5
 54bcc5dd4f94662447fdf569,IslandPrincess_LightlySaltedMacadamiaNuts,calories,110,fat,11,carbohydrate,2,fiber,1,protein,1
 51c541e397c3e6efadd5c2ff,Embasa_CarrotsInEscabeche7Oz,calories,15,fat,0,carbohydrate,2,fiber,0,protein,0
-51c3ed5497c3e6de73cbb136,AMPM_CandyGummiWorms,calories,190,fat,0,carbohydrate,46,fiber,0,protein,4
+51c3ed5497c3e6de73cbb136,AMPM_CandyGummiWorms,calories,190,fat,0,carbohydrate,46,fiber,0,
 52cd67b9d0eefe626b000f60,ArcherFarms_MonsterTrailMix,calories,170,fat,9,carbohydrate,20,fiber,1,protein,4
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
