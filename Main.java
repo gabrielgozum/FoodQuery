@@ -321,7 +321,7 @@ public class Main extends Application{
 		addIndividual.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				FoodItem newFood = new FoodItem(newName, newID); 
+				FoodItem newFood = new FoodItem(newID, newName); 
 				newFood.addNutrient("Fat", newFat);
 				newFood.addNutrient("Fiber", newFiber);
 				newFood.addNutrient("Calories", newCalorie);
@@ -329,6 +329,10 @@ public class Main extends Application{
 				newFood.addNutrient("Protein", newProtein);
 				foodListItems.add(newFood);
 				foodListNames.add(newFood.getName());
+				for(String s: foodListNames) {
+					System.out.println(s);
+				}
+				Collections.sort(foodListNames);
 				ObservableList<String> foodListObserve = FXCollections.observableArrayList(foodListNames);
 				foodList.setItems(foodListObserve);
 			}
