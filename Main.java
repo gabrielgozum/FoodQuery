@@ -26,7 +26,15 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Main extends Application{
-
+	private double newCalorie;
+	private double newCarbs;
+	private double newFat;
+	private double newFiber;
+	private double newProtein;
+	private String newName;
+	private String newID;
+	
+	
 	public static void main(String[] args) {
 		
 /////////////////////// TESTING FOOD DATA ///////////////////////////////
@@ -53,7 +61,7 @@ public class Main extends Application{
 		StackPane filter = new StackPane();
 		Scene filterScene = new Scene(filter, 600, 600);
 		
-		//Main boxes
+		//Main (root) boxes
 		VBox VB1 = new VBox(); 	//Used in left Border
 		VBox VB2 = new VBox();	//Used in right border
 		VBox VB3 = new VBox();	//Used in bottom border in HB
@@ -67,6 +75,7 @@ public class Main extends Application{
 		HBox calorieBox = new HBox();
 		HBox carbohydrateBox = new HBox();
 		HBox fatBox = new HBox();
+		HBox idBox = new HBox();
 		
 		//Filter boxes
 		HBox FHBMinMax = new HBox();
@@ -81,13 +90,15 @@ public class Main extends Application{
 		Button analyzeMeal = new Button(); 		//will calculate nutrition totals
 		Button filterSceneBtn = new Button(); 	//changes to filter scene
 		Button rootBtn = new Button();			//changes back to root
+		Button addIndividual = new Button();
+		addIndividual.setText("Add new item to food list");
 		rootBtn.setText("Apply filters and go back");
 		filterSceneBtn.setText("Click to apply Filters");
 		
 		//Labels seen on the root scene
 		Label topLabel = new Label("FoodQuery and Meal Analysis");
 		topLabel.setFont(new Font("Arial", 30));
-		Label individualFood = new Label("Add Food Manually: ");
+		//Label individualFood = new Label("Add Food Manually: ");
 		Label fileInput = new Label();
 		Label foodName = new Label("Name: ");
 		Label foodProtein = new Label("Protein: ");
@@ -95,6 +106,7 @@ public class Main extends Application{
 		Label foodCalories = new Label("Calories :");
 		Label foodCarbs = new Label("Carbohydrates:");
 		Label foodFat = new Label("Fat: ");
+		Label foodID = new Label("ID: ");
 		Label foodListLabel = new Label("Food List");
 		foodListLabel.setFont(new Font("Arial" , 15));
 		Label mealListLabel = new Label("Meal List");
@@ -132,7 +144,9 @@ public class Main extends Application{
 		TextField foodCaloriesField = new TextField();
 		TextField foodCarbsField = new TextField();
 		TextField foodFatField = new TextField();
+		TextField foodIDField = new TextField();
 		TextField fileInputField = new TextField();
+		
 		
 		//TextFields for searching in the lists
 		TextField foodListSearchBar = new TextField("Search");
@@ -157,6 +171,7 @@ public class Main extends Application{
 		calorieBox.getChildren().addAll(foodCalories, foodCaloriesField);
 		carbohydrateBox.getChildren().addAll(foodCarbs, foodCarbsField);
 		fatBox.getChildren().addAll(foodFat, foodFatField);
+		idBox.getChildren().addAll(foodID, foodIDField);
 		
 		fileInput.setText("Enter your file name");
 		analyzeMeal.setText("Click to analyze your meal");
@@ -173,7 +188,10 @@ public class Main extends Application{
 		});
 		ListView<String> foodList = new ListView<String>();
 		ListView<String> mealList = new ListView<String>();
-		List<String> mealListItems = new ArrayList<String>();
+		List<String> foodListNames = new ArrayList<String>();
+		List<String> mealListNames = new ArrayList<String>();
+		List<FoodItem> foodListItems = new ArrayList<FoodItem>();
+		List<FoodItem> mealListItems = new ArrayList<FoodItem>();
 		/*
 		 * When fileInputField has had a file typed in and enter has been
 		 * pressed, it will read the contents of that file and make a list of
@@ -185,18 +203,17 @@ public class Main extends Application{
 				FoodData fileReadIn = new FoodData();	//create FoodData object to read file
 				fileReadIn.loadFoodItems(fileInputField.getText()); //Load file in
 				//Get an observable list of FoodItems
-				ObservableList<FoodItem> foodListItems = 
+				ObservableList<FoodItem> foodListItemsObserve = 
 						FXCollections.observableArrayList(fileReadIn.getAllFoodItems());
-				
-				List<String> foodItemsNames = new ArrayList<String>();
 				//Get the name of each item from foodListItems and put it into separate list.
-				for(FoodItem f: foodListItems) {
+				for(FoodItem f: foodListItemsObserve) {
 					if(!f.getName().equals("")) {	//make sure empty entries don't make it in
-						foodItemsNames.add(f.getName());
+						foodListNames.add(f.getName());
+						foodListItems.add(f);
 					}
 				}
 				//Make the list of foodItemNames into an ObservableList to be displayed.
-				ObservableList<String> displayFood = FXCollections.observableArrayList(foodItemsNames);
+				ObservableList<String> displayFood = FXCollections.observableArrayList(foodListNames);
 				Collections.sort(displayFood);	//sort the list in alphabetical order
 				foodList.setItems(displayFood);
 			}
@@ -204,7 +221,7 @@ public class Main extends Application{
 		
 		foodList.setPrefWidth(100);
 		foodList.setPrefHeight(250);
-		
+		//ObservableList<String> mealListObserve;
 		/*
 		 * When an individual item is clicked in foodList, it adds it to mealList.
 		 * This does this by adding the clicked item to a list, then turning that list 
@@ -213,9 +230,13 @@ public class Main extends Application{
 		foodList.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				mealListItems.add(foodList.getSelectionModel().getSelectedItem());
-				ObservableList<String> mealListObserve = FXCollections.observableArrayList(mealListItems);
-				mealList.setItems(mealListObserve);
+				//prevents adding null items on empty ListView
+				if(foodList.getSelectionModel().getSelectedItem() != null) {
+					mealListNames.add(foodList.getSelectionModel().getSelectedItem());
+					ObservableList<String> mealListObserve = FXCollections.observableArrayList(mealListNames);
+					mealList.setItems(mealListObserve);
+				}
+				
 			}
 		});
 		
@@ -242,13 +263,77 @@ public class Main extends Application{
 				primaryStage.setScene(mainScene);
 			}
 		});
-		
-		//Hard coded mealList for milestone 2
-//		ListView<String> mealList = new ListView<String>();
-//		ObservableList<String> mealItems = FXCollections.observableArrayList(
-//				"Burgers", "Fries", "Beer", "Fruit");
-//		mealList.setItems(mealItems);
-//		
+		/*
+		 * Following TextFields handle taking in user data and storing them
+		 * in variables to make new FoodItem
+		 */
+		//Name case
+		foodNameField.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {
+				newName = foodNameField.getText();
+			}
+		});
+		foodIDField.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				newID = foodIDField.getText();
+			}
+		});
+		//Protein case
+		foodProteinField.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				newProtein = Double.parseDouble(foodProteinField.getText());
+			}
+		});
+		//Fiber case
+		foodFiberField.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				newFiber = Double.parseDouble(foodFiberField.getText());
+			}
+		});
+		//Fat case
+		foodFatField.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				newFat = Double.parseDouble(foodFatField.getText());
+			}
+		});
+		//Calories case
+		foodCaloriesField.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				newCalorie = Double.parseDouble(foodCaloriesField.getText());
+			}
+		});
+		//Carbohydrate case
+		foodCarbsField.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				newCarbs = Double.parseDouble(foodCarbsField.getText());
+			}
+		});
+		/*
+		 * Creates new FoodItem and adds it to the foodList
+		 */
+		addIndividual.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				FoodItem newFood = new FoodItem(newName, newID); 
+				newFood.addNutrient("Fat", newFat);
+				newFood.addNutrient("Fiber", newFiber);
+				newFood.addNutrient("Calories", newCalorie);
+				newFood.addNutrient("Carbohydrates", newCarbs);
+				newFood.addNutrient("Protein", newProtein);
+				foodListItems.add(newFood);
+				foodListNames.add(newFood.getName());
+				ObservableList<String> foodListObserve = FXCollections.observableArrayList(foodListNames);
+				foodList.setItems(foodListObserve);
+			}
+		});
+			
 		//Left side of the main scene
 		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, addFromList, filterSceneBtn);
 		VB1.setSpacing(10);
@@ -266,11 +351,10 @@ public class Main extends Application{
 		VB4.setAlignment(Pos.CENTER);
 		
 		//Used in bottom of main scene to input individual foods.
-		VB5.getChildren().addAll(individualFood, nameBox, proteinBox, fiberBox);
+		VB5.getChildren().addAll(addIndividual, nameBox, proteinBox, fiberBox);
 		VB5.setSpacing(2);
-		VB6.getChildren().addAll(calorieBox, carbohydrateBox, fatBox);
+		VB6.getChildren().addAll(idBox, calorieBox, carbohydrateBox, fatBox);
 		VB6.setSpacing(2);
-		VB6.setAlignment(Pos.BOTTOM_CENTER);
 		
 		//Put all the bottom VBoxes together
 		HB.getChildren().addAll(VB3, VB5, VB6);
@@ -283,6 +367,8 @@ public class Main extends Application{
 		FHBFiber.getChildren().addAll(minFiber, fiberFilter, maxFiber);
 		FHBProtein.getChildren().addAll(minProtein, proteinFilter, maxProtein);
 		
+		
+		//Putting top level boxes in correct locations
 		mainBorderPanel.setTop(topLabel);
 		mainBorderPanel.setLeft(VB1);
 		mainBorderPanel.setRight(VB2);
