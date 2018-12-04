@@ -228,12 +228,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             	}else{
             		index2 = (-1 * index2) - 1;
             	}
-            	if (index2 >= 0){
-            		children.set(index2, neighbor);
-            	}else{
-            		keys.add(index2, key);
-            		children.add(index2 + 1, neighbor);
-            	}
+            	keys.add(index2, key);
+            	children.add(index2 + 1, neighbor);
             }
             if (root.isOverflow()){
             	Node neighbor = split();
@@ -295,9 +291,6 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         // Reference to the next leaf node
         LeafNode next;
         
-        // Reference to the previous leaf node
-        LeafNode previous;
-        
         /**
          * Package constructor
          */
@@ -330,20 +323,15 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          * @see BPTree.Node#insert(Comparable, Object)
          */
         void insert(K key, V value) {
-        	int place = Collections.binarySearch(keys, key);
         	int index;
-        	//System.out.println(index);
+        	int place = Collections.binarySearch(keys, key);
         	if (place >= 0){
         		index = place;
         	}else{
         		index = (-1 * place) - 1;
         	}
-        	if (place < 0){
-        		values.add(index, value);
-        		keys.add(index, key);
-        	}else{
-        		values.set(index, value);
-        	}
+         	values.add(index, value);
+       		keys.add(index, key);
         	if (root.isOverflow()){
         		InternalNode replacement = new InternalNode();
         		Node below = split();
