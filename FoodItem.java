@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * This class represents a food item with all its properties.
  * 
- * @author aka
+ * @author 
  */
 public class FoodItem {
     // The name of the food item.
@@ -80,5 +80,4 @@ public class FoodItem {
         }
         return val;
     }
-    
 }
