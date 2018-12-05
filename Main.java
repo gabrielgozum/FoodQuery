@@ -182,8 +182,10 @@ public class Main extends Application{
 		
 		
 		//TextFields for searching in the lists
-		TextField foodListSearchBar = new TextField("Search");
-		TextField mealListSearchBar = new TextField("Search");
+		TextField foodListSearchBar = new TextField();
+		foodListSearchBar.setPromptText("Search");
+		TextField mealListSearchBar = new TextField();
+		mealListSearchBar.setPromptText("Search");
 		
 		//TextFields for applying filters
 		TextField minCal = new TextField();
@@ -369,15 +371,19 @@ public class Main extends Application{
 		addIndividual.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
+				/*
+				 * If the ID or name is null, don't make a new FoodItem, prompt
+				 * the user.
+				 */
 				if(newID == null) {
 					Alert IDAlert = new Alert(AlertType.WARNING);
-					IDAlert.setTitle("Error");
+					IDAlert.setTitle("ID Error");
 					IDAlert.setContentText("ID can't be null (remember to hit enter)");
 					IDAlert.showAndWait();
 				}
 				else if(newName == null) {
 					Alert nameAlert = new Alert(AlertType.WARNING);
-					nameAlert.setTitle("Error");
+					nameAlert.setTitle("Name Error");
 					nameAlert.setContentText("Name can't be null (remember to hit enter)");
 					nameAlert.showAndWait();
 				}
@@ -390,9 +396,9 @@ public class Main extends Application{
 					newFood.addNutrient("Protein", newProtein);
 					foodListItems.add(newFood);
 					foodListNames.add(newFood.getName());
-//					for(String s: foodListNames) {
-//						System.out.println(s);
-//					}
+					for(String s: foodListNames) {
+						System.out.println(s);
+					}
 					Collections.sort(foodListNames);
 					ObservableList<String> foodListObserve = FXCollections.observableArrayList(foodListNames);
 					foodList.setItems(foodListObserve);
