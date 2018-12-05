@@ -241,6 +241,21 @@ public class Main extends Application{
 				
 			}
 		});
+		/*
+		 * Handles removing items when an item is clicked on the meal list.
+		 */
+		mealList.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event){
+				if(mealList.getSelectionModel().getSelectedItem() != null) {
+					mealListNames.remove(mealList.getSelectionModel().getSelectedItem());
+					ObservableList<String> mealListObserve = FXCollections.observableArrayList(mealListNames);
+					mealList.setItems(mealListObserve);
+				}
+			}
+				
+		
+		});
 		
 		//For aesthetics
 		mealList.setPrefWidth(100);
