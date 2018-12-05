@@ -14,6 +14,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -27,11 +29,11 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Main extends Application{
-	private double newCalorie;
-	private double newCarbs;
-	private double newFat;
-	private double newFiber;
-	private double newProtein;
+	private double newCalorie = 0;
+	private double newCarbs = 0;
+	private double newFat = 0;
+	private double newFiber = 0;
+	private double newProtein = 0;
 	private String newName;
 	private String newID;
 	
@@ -39,7 +41,10 @@ public class Main extends Application{
 	public static void main(String[] args) {
 		
 /////////////////////// TESTING FOOD DATA ///////////////////////////////
-	
+		 
+		//Diego commented all this so I can test my own stuff.
+		
+		
  		FoodData foodData = new FoodData();
 		foodData.loadFoodItems("application/foodItems.txt");
 		ArrayList<FoodItem> foodList = (ArrayList<FoodItem>) foodData.getAllFoodItems();
@@ -364,20 +369,35 @@ public class Main extends Application{
 		addIndividual.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				FoodItem newFood = new FoodItem(newID, newName); 
-				newFood.addNutrient("Fat", newFat);
-				newFood.addNutrient("Fiber", newFiber);
-				newFood.addNutrient("Calories", newCalorie);
-				newFood.addNutrient("Carbohydrates", newCarbs);
-				newFood.addNutrient("Protein", newProtein);
-				foodListItems.add(newFood);
-				foodListNames.add(newFood.getName());
-				for(String s: foodListNames) {
-					System.out.println(s);
+				if(newID == null) {
+					Alert IDAlert = new Alert(AlertType.WARNING);
+					IDAlert.setTitle("Error");
+					IDAlert.setContentText("ID can't be null (remember to hit enter)");
+					IDAlert.showAndWait();
 				}
-				Collections.sort(foodListNames);
-				ObservableList<String> foodListObserve = FXCollections.observableArrayList(foodListNames);
-				foodList.setItems(foodListObserve);
+				else if(newName == null) {
+					Alert nameAlert = new Alert(AlertType.WARNING);
+					nameAlert.setTitle("Error");
+					nameAlert.setContentText("Name can't be null (remember to hit enter)");
+					nameAlert.showAndWait();
+				}
+				else {
+					FoodItem newFood = new FoodItem(newID, newName); 
+					newFood.addNutrient("Fat", newFat);
+					newFood.addNutrient("Fiber", newFiber);
+					newFood.addNutrient("Calories", newCalorie);
+					newFood.addNutrient("Carbohydrates", newCarbs);
+					newFood.addNutrient("Protein", newProtein);
+					foodListItems.add(newFood);
+					foodListNames.add(newFood.getName());
+//					for(String s: foodListNames) {
+//						System.out.println(s);
+//					}
+					Collections.sort(foodListNames);
+					ObservableList<String> foodListObserve = FXCollections.observableArrayList(foodListNames);
+					foodList.setItems(foodListObserve);
+				}
+				
 			}
 		});
 			
