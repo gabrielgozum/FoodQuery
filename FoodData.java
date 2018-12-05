@@ -34,7 +34,9 @@ public class FoodData implements FoodDataADT<FoodItem> {
         foodItemList = new ArrayList<FoodItem>();
     }
     
-    
+    protected HashMap<String, BPTree<Double, FoodItem>> getIndexes(){
+    	return this.indexes;
+    }
     /*
      * (non-Javadoc)
      * @see skeleton.FoodDataADT#loadFoodItems(java.lang.String)

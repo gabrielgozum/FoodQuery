@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -42,11 +43,36 @@ public class Main extends Application{
  		FoodData foodData = new FoodData();
 		foodData.loadFoodItems("application/foodItems.txt");
 		ArrayList<FoodItem> foodList = (ArrayList<FoodItem>) foodData.getAllFoodItems();
-		for(FoodItem i : foodList)
-			System.out.println(i.getName());
+		//for(FoodItem i : foodList)
+		//	System.out.println(i.getName());
 		
 		foodData.saveFoodItems("application/foodSaved.txt");
-
+		foodData.getIndexes().put("calories", new BPTree<Double, FoodItem>(3));
+		foodData.getIndexes().put("carbs", new BPTree<Double, FoodItem>(3));
+		foodData.getIndexes().put("fat", new BPTree<Double, FoodItem>(3));
+		foodData.getIndexes().put("fiber", new BPTree<Double, FoodItem>(3));
+		foodData.getIndexes().put("protein", new BPTree<Double, FoodItem>(3));
+		String[] names = {"calories",
+				"carbs", "fat", "fiber", "protein"};
+		for (int i = 0; i < 5; i++){
+			BPTree<Double, FoodItem> tree = foodData.getIndexes().get(names[i]);
+			for (FoodItem fi : foodList){
+				tree.insert(fi.getNutrientValue(names[i]), fi);
+			}
+		}
+		BPTree<Double, FoodItem> tree = foodData.getIndexes().get(names[3]);
+		List<FoodItem> check = tree.rangeSearch(0.0, ">=");
+		System.out.println(foodList.size());
+		//System.out.println(tree.toString());
+		System.out.println(check.size());
+		for (FoodItem fi : check){
+			System.out.println(fi.getName() + " " + fi.getNutrientValue("fiber"));
+		}
+		
+		
+		
+		
+		
 //////////////////////////////////////////////////////////////////////////
 		
 		launch(args);
