@@ -29,6 +29,11 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Main extends Application{
+	private double totalCalories = 0;
+	private double totalCarbs = 0;
+	private double totalFat = 0;
+	private double totalFiber = 0;
+	private double totalProtein = 0;
 	private double newCalorie = 0;
 	private double newCarbs = 0;
 	private double newFat = 0;
@@ -214,6 +219,13 @@ public class Main extends Application{
 		fileInput.setText("Enter your file name");
 		analyzeMeal.setText("Click to analyze your meal");
 		
+		ListView<String> foodList = new ListView<String>();
+		ListView<String> mealList = new ListView<String>();
+		List<String> foodListNames = new ArrayList<String>();
+		List<String> mealListNames = new ArrayList<String>();
+		List<FoodItem> foodListItems = new ArrayList<FoodItem>();
+		List<FoodItem> mealListItems = new ArrayList<FoodItem>();
+		
 		/*
 		 * When analyzeMeal is pressed, the total nutritional value of the meal
 		 * will be added up and displayed on the root scene.
@@ -221,15 +233,54 @@ public class Main extends Application{
 		analyzeMeal.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Meal analysis");
+				//Clear the list every time to reset values
+				mealListItems.clear();
+				/*
+				 * Find each FoodItem that has its name in the mealList and
+				 * add those FoodItems to the mealListItems so their 
+				 * nutritional values can be grabbed.
+				 */
+				for(String s : mealListNames) {
+					for(FoodItem f: foodListItems) {
+						if(s.equals(f.getName())) {
+							mealListItems.add(f);
+						}
+					}
+				}
+				//clears the calories so new meals don't add to it
+				totalCalories = 0;
+				totalCarbs = 0;
+				totalFat = 0;
+				totalFiber = 0;
+				totalProtein = 0;
+				/*
+				 * If mealListNames is empty, the for each loop is never 
+				 * entered, this if statement will allow the meal to properly
+				 * update to 0 for an empty meal.
+				 */
+				if(mealListNames.isEmpty()) {
+					mealCalories.setText("Total Calories: " + totalCalories);
+					mealCarbohydrates.setText("Total Carbs: " + totalCarbs);
+					mealFat.setText("Total Fat: " + totalFat);
+					mealFiber.setText("Total Fiber: " + totalFiber);
+					mealProtein.setText("Total Protein: " + totalProtein);
+				}
+				//Add and update displays with total nutrional values
+				for(FoodItem f: mealListItems) {
+					totalCalories += f.getNutrientValue("calories");
+					mealCalories.setText("Total Calories: " + totalCalories);
+					totalCarbs += f.getNutrientValue("carbohydrates");
+					mealCarbohydrates.setText("Total Carbs: " + totalCarbs);
+					totalFat += f.getNutrientValue("fat");
+					mealFat.setText("Total Fat: " + totalCarbs);
+					totalFiber += f.getNutrientValue("fiber");
+					mealFiber.setText("Total Fiber: " + totalFiber);
+					totalProtein += f.getNutrientValue("protein");
+					mealProtein.setText("Total Protein: " + totalProtein);
+				}
 			}
 		});
-		ListView<String> foodList = new ListView<String>();
-		ListView<String> mealList = new ListView<String>();
-		List<String> foodListNames = new ArrayList<String>();
-		List<String> mealListNames = new ArrayList<String>();
-		List<FoodItem> foodListItems = new ArrayList<FoodItem>();
-		List<FoodItem> mealListItems = new ArrayList<FoodItem>();
+		
 		/*
 		 * When fileInputField has had a file typed in and enter has been
 		 * pressed, it will read the contents of that file and make a list of
@@ -283,14 +334,14 @@ public class Main extends Application{
 		mealList.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event){
-				if(mealList.getSelectionModel().getSelectedItem() != null) {
-					mealListNames.remove(mealList.getSelectionModel().getSelectedItem());
+				String removedName = mealList.getSelectionModel().getSelectedItem();
+				System.out.println(removedName);
+				if(removedName != null) {
+					mealListNames.remove(removedName);
 					ObservableList<String> mealListObserve = FXCollections.observableArrayList(mealListNames);
 					mealList.setItems(mealListObserve);
 				}
 			}
-				
-		
 		});
 		
 		//For aesthetics
@@ -390,18 +441,16 @@ public class Main extends Application{
 					nameAlert.setContentText("Name can't be null (remember to hit enter)");
 					nameAlert.showAndWait();
 				}
+				//create the new FoodItem and add it to the lists
 				else {
 					FoodItem newFood = new FoodItem(newID, newName); 
-					newFood.addNutrient("Fat", newFat);
-					newFood.addNutrient("Fiber", newFiber);
-					newFood.addNutrient("Calories", newCalorie);
-					newFood.addNutrient("Carbohydrates", newCarbs);
-					newFood.addNutrient("Protein", newProtein);
+					newFood.addNutrient("fat", newFat);
+					newFood.addNutrient("fiber", newFiber);
+					newFood.addNutrient("calories", newCalorie);
+					newFood.addNutrient("carbohydrates", newCarbs);
+					newFood.addNutrient("protein", newProtein);
 					foodListItems.add(newFood);
 					foodListNames.add(newFood.getName());
-					for(String s: foodListNames) {
-						System.out.println(s);
-					}
 					Collections.sort(foodListNames);
 					ObservableList<String> foodListObserve = FXCollections.observableArrayList(foodListNames);
 					foodList.setItems(foodListObserve);
