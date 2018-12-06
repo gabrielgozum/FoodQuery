@@ -32,6 +32,13 @@ public class FoodData implements FoodDataADT<FoodItem> {
     public FoodData() {
         indexes = new HashMap<String, BPTree<Double, FoodItem>>();
         foodItemList = new ArrayList<FoodItem>();
+  
+        //BPTrees for nutrients
+        indexes.put("calories", new BPTree<Double, FoodItem>(3));
+        indexes.put("carbohydrate", new BPTree<Double, FoodItem>(3));
+        indexes.put("fiber", new BPTree<Double, FoodItem>(3));
+        indexes.put("fat", new BPTree<Double, FoodItem>(3));
+        indexes.put("protein", new BPTree<Double, FoodItem>(3));
     }
     
     protected HashMap<String, BPTree<Double, FoodItem>> getIndexes(){
@@ -78,6 +85,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 				if(!skipLine)
 				{
 					foodItemList.add(cur); // adds food item to LinkedList
+					nutritionInsert(cur);  // adds nutrients to index
 				}
 			}
 			input.close();
@@ -88,6 +96,20 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		{
 			e.printStackTrace();
 		}      
+    }
+    
+    /**
+     * Private helper method to add nutritional data to index
+     * @param f
+     */
+    private void nutritionInsert(FoodItem f)
+    {
+    	HashMap<String, Double> nutrients = f.getNutrients();
+    	
+    	for(String i : nutrients.keySet())
+    	{
+    		indexes.get(i).insert(nutrients.get(i), f);
+    	}
     }
 
     /*
@@ -126,6 +148,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
          *
          * @param rules list of rules
          * @return list of filtered food items; if no food item matched, return empty list
+         * 
          */
     	ArrayList<FoodItem> filtered = new ArrayList<FoodItem>(foodItemList); //make a copy of foodItemList
     	String[] ruleArray;

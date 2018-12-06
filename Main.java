@@ -47,11 +47,12 @@ public class Main extends Application{
 		
  		FoodData foodData = new FoodData();
 		foodData.loadFoodItems("application/foodItems.txt");
-		ArrayList<FoodItem> foodList = (ArrayList<FoodItem>) foodData.getAllFoodItems();
+		//ArrayList<FoodItem> foodList = (ArrayList<FoodItem>) foodData.getAllFoodItems();
 		//for(FoodItem i : foodList)
 		//	System.out.println(i.getName());
 		
-		foodData.saveFoodItems("application/foodSaved.txt");
+		//foodData.saveFoodItems("application/foodSaved.txt");
+		/*
 		foodData.getIndexes().put("calories", new BPTree<Double, FoodItem>(3));
 		foodData.getIndexes().put("carbs", new BPTree<Double, FoodItem>(3));
 		foodData.getIndexes().put("fat", new BPTree<Double, FoodItem>(3));
@@ -73,6 +74,8 @@ public class Main extends Application{
 		for (FoodItem fi : check){
 			System.out.println(fi.getName() + " " + fi.getNutrientValue("fiber"));
 		}
+		*/
+		
 		
 		
 		
