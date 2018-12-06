@@ -127,32 +127,53 @@ public class FoodData implements FoodDataADT<FoodItem> {
          * @param rules list of rules
          * @return list of filtered food items; if no food item matched, return empty list
          */
-    	ArrayList<FoodItem> filtered = new ArrayList<FoodItem>();
+    	ArrayList<FoodItem> filtered = new ArrayList<FoodItem>(foodItemList); //make a copy of foodItemList
     	String[] ruleArray;
     	for(String r : rules)
     	{
     		ruleArray = r.split(" ");
     		ruleArray[0] = ruleArray[0].toLowerCase(); // case insensitive for nutrient
+    		double doubleValue = Double.parseDouble(ruleArray[2]);
     		switch(ruleArray[1])
     		{
     			case ">=":
     			{
-    				// TODO: >=
+    			    ArrayList<FoodItem> caseOneList = new ArrayList<FoodItem>();
+    				for(FoodItem i : filtered) {
+    				    if(i.getNutrientValue(ruleArray[0]) >= doubleValue) {
+    				        caseOneList.add(i);
+    				    }
+    				}
+    				filtered = caseOneList;
+    				break;
     			}
     			case "<=":
     			{
-    				// TODO <=
+    			    ArrayList<FoodItem> caseList = new ArrayList<FoodItem>();
+                    for(FoodItem i : filtered) {
+                        if(i.getNutrientValue(ruleArray[0]) <= doubleValue) {
+                            caseList.add(i);
+                        }
+                    }
+                    filtered = caseList;
+                    break;
     			}
     			case "==":
     			{
-    				
+    			    ArrayList<FoodItem> caseList = new ArrayList<FoodItem>();
+                    for(FoodItem i : filtered) {
+                        if(i.getNutrientValue(ruleArray[0]) == doubleValue) {
+                            caseList.add(i);
+                        }
+                    }
+                    filtered = caseList;
+                    break;
     			}
     			default:
-    				// NOTHING
+    				// Nothing
     		}		
     	}
-    	
-    	return null;
+    	return filtered;
     }
 
     /*
