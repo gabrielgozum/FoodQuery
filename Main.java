@@ -132,6 +132,8 @@ public class Main extends Application{
 		Button filterSceneBtn = new Button(); 	//changes to filter scene
 		Button rootBtn = new Button();			//changes back to root
 		Button addIndividual = new Button();
+		Button saveBtn = new Button();
+		saveBtn.setText("Save current food list");
 		addIndividual.setText("Add new item to food list");
 		rootBtn.setText("Apply filters and go back");
 		filterSceneBtn.setText("Click to apply Filters");
@@ -284,11 +286,14 @@ public class Main extends Application{
 		/*
 		 * When fileInputField has had a file typed in and enter has been
 		 * pressed, it will read the contents of that file and make a list of
-		 * FoodItems and add them to the food list on the root scene.
+		 * FoodItems and add them to the food list on the root scene. Also 
+		 * clears the previous FoodList that was displayed on the GUI.
 		 */
 		fileInputField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
+				foodListItems.clear();
+				foodListNames.clear();
 				FoodData fileReadIn = new FoodData();	//create FoodData object to read file
 				fileReadIn.loadFoodItems(fileInputField.getText()); //Load file in
 				//Get an observable list of FoodItems
@@ -369,54 +374,70 @@ public class Main extends Application{
 		});
 		/*
 		 * Following TextFields handle taking in user data and storing them
-		 * in variables to make new FoodItem
+		 * in variables to make new FoodItem. Checks if the Fields are not
+		 * empty Strings. If nothing is put for nutritional values, default 
+		 * value of 0 is used.
 		 */
 		//Name case
 		foodNameField.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
-				newName = foodNameField.getText();
+				if(!foodNameField.getText().equals("")) {
+					newName = foodNameField.getText();
+				}
 			}
 		});
 		foodIDField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				newID = foodIDField.getText();
+				if(!foodIDField.getText().equals("")) {
+					newID = foodIDField.getText();
+				}
 			}
 		});
 		//Protein case
 		foodProteinField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				newProtein = Double.parseDouble(foodProteinField.getText());
+				if(!foodProteinField.getText().equals("")) {
+					newProtein = Double.parseDouble(foodProteinField.getText());
+				}		
 			}
 		});
 		//Fiber case
 		foodFiberField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				newFiber = Double.parseDouble(foodFiberField.getText());
+				if(!foodFiberField.getText().equals("")) {
+					newFiber = Double.parseDouble(foodFiberField.getText());
+				}
 			}
 		});
 		//Fat case
 		foodFatField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				newFat = Double.parseDouble(foodFatField.getText());
+				if(!foodFatField.getText().equals("")) {
+					newFat = Double.parseDouble(foodFatField.getText());
+				}
 			}
 		});
 		//Calories case
 		foodCaloriesField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				newCalorie = Double.parseDouble(foodCaloriesField.getText());
+				if(!foodCaloriesField.getText().equals("")) {
+					newCalorie = Double.parseDouble(foodCaloriesField.getText());
+				}
 			}
 		});
 		//Carbohydrate case
 		foodCarbsField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				newCarbs = Double.parseDouble(foodCarbsField.getText());
+				if(!foodCarbsField.getText().equals("")) {
+					newCarbs = Double.parseDouble(foodCarbsField.getText());
+				}
 			}
 		});
 		/*
@@ -458,9 +479,25 @@ public class Main extends Application{
 				
 			}
 		});
+		
+		/*
+		 * Saves the current FoodList being displayed to foodSaved.txt. 
+		 * Gets every foodItem in the foodList and puts it into a new FoodData
+		 * object to read from to write to the new file.
+		 */
+		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				FoodData writeFile = new FoodData();
+				for(FoodItem f: foodListItems) {
+					writeFile.addFoodItem(f);
+				}
+				writeFile.saveFoodItems("foodSaved.txt");
+			}
+		});
 			
 		//Left side of the main scene
-		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, addFromList, filterSceneBtn);
+		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, addFromList, saveBtn, filterSceneBtn);
 		VB1.setSpacing(10);
 		
 		//Right side of the main scene

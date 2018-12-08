@@ -3,6 +3,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -90,8 +94,13 @@ public class FoodData implements FoodDataADT<FoodItem> {
 			}
 			input.close();
 			
+			//if the file is not found, prompt user.
 		} catch (FileNotFoundException e) {
-			System.out.println("The file: " + filePath + " was not found"); //TODO: print an error box
+			Alert fileAlert = new Alert(AlertType.WARNING);
+			fileAlert.setTitle("File Error");
+			fileAlert.setContentText("The file: " + filePath + 
+					" was not found (Check your spelling?)");
+			fileAlert.showAndWait();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
