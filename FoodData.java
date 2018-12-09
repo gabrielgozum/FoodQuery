@@ -196,7 +196,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	        }
 	        out.close();
         } catch (IOException e) {
-        	System.out.println("The file could not be named: " + filename); //TODO: print in error box
+        	Alert fileAlert = new Alert(AlertType.WARNING);
+			fileAlert.setTitle("File Error");
+			fileAlert.setContentText("The file: " + filename + " could not be named (Check your spelling?)");
+			fileAlert.showAndWait();
         }
     }
 }
