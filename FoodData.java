@@ -137,75 +137,18 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public List<FoodItem> filterByNutrients(List<String> rules) {
-    	  /**
-         * Gets all the food items that fulfill ALL the provided rules
-         *
-         * Format of a rule:
-         *     "<nutrient> <comparator> <value>"
-         * 
-         * Definition of a rule:
-         *     A rule is a string which has three parts separated by a space:
-         *         1. <nutrient>: Name of one of the 5 nutrients [CASE-INSENSITIVE]
-         *         2. <comparator>: One of the following comparison operators: <=, >=, ==
-         *         3. <value>: a double value
-         * 
-         * Note:
-         *     1. Multiple rules can contain the same nutrient.
-         *         E.g. ["calories >= 50.0", "calories <= 200.0", "fiber == 2.5"]
-         *     2. A FoodItemADT object MUST satisfy ALL the provided rules i
-         *        to be returned in the filtered list.
-         *
-         * @param rules list of rules
-         * @return list of filtered food items; if no food item matched, return empty list
-         * 
-         */
-    	ArrayList<FoodItem> filtered = new ArrayList<FoodItem>(foodItemList); //make a copy of foodItemList
+    	List<FoodItem> filtered = new ArrayList<FoodItem>(foodItemList); //make a copy of foodItemList
     	String[] ruleArray;
-    	for(String r : rules)
-    	{
+    	for(String r : rules) {
     		ruleArray = r.split(" ");
     		ruleArray[0] = ruleArray[0].toLowerCase(); // case insensitive for nutrient
+    		BPTree<Double, FoodItem> bpTree = indexes.get(ruleArray[0]);
     		double doubleValue = Double.parseDouble(ruleArray[2]);
-    		switch(ruleArray[1])
-    		{
-    			case ">=":
-    			{
-    			    ArrayList<FoodItem> caseOneList = new ArrayList<FoodItem>();
-    				for(FoodItem i : filtered) {
-    				    if(i.getNutrientValue(ruleArray[0]) >= doubleValue) {
-    				        caseOneList.add(i);
-    				    }
-    				}
-    				filtered = caseOneList;
-    				break;
-    			}
-    			case "<=":
-    			{
-    			    ArrayList<FoodItem> caseList = new ArrayList<FoodItem>();
-                    for(FoodItem i : filtered) {
-                        if(i.getNutrientValue(ruleArray[0]) <= doubleValue) {
-                            caseList.add(i);
-                        }
-                    }
-                    filtered = caseList;
-                    break;
-    			}
-    			case "==":
-    			{
-    			    ArrayList<FoodItem> caseList = new ArrayList<FoodItem>();
-                    for(FoodItem i : filtered) {
-                        if(i.getNutrientValue(ruleArray[0]) == doubleValue) {
-                            caseList.add(i);
-                        }
-                    }
-                    filtered = caseList;
-                    break;
-    			}
-    			default:
-    				// Nothing
-    		}		
+    		List<FoodItem> list = bpTree.rangeSearch(doubleValue, ruleArray[1]);
+    		filtered = filtered.stream().filter(x -> list.contains(x)).collect(Collectors.toList());
     	}
-    	return filtered;
+    	
+    	return filtered; 
     }
 
     /*
