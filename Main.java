@@ -312,7 +312,7 @@ public class Main extends Application{
 					totalCarbs += f.getNutrientValue("carbohydrate");
 					mealCarbohydrates.setText("Total Carbs: " + totalCarbs);
 					totalFat += f.getNutrientValue("fat");
-					mealFat.setText("Total Fat: " + totalCarbs);
+					mealFat.setText("Total Fat: " + totalFat);
 					totalFiber += f.getNutrientValue("fiber");
 					mealFiber.setText("Total Fiber: " + totalFiber);
 					totalProtein += f.getNutrientValue("protein");
@@ -378,7 +378,6 @@ public class Main extends Application{
 			@Override
 			public void handle(MouseEvent event){
 				String removedName = mealList.getSelectionModel().getSelectedItem();
-				System.out.println(removedName);
 				if(removedName != null) {
 					mealListNames.remove(removedName);
 					ObservableList<String> mealListObserve = FXCollections.observableArrayList(mealListNames);
@@ -580,6 +579,66 @@ public class Main extends Application{
 					writeFile.addFoodItem(f);
 				}
 				writeFile.saveFoodItems("foodSaved.txt");
+			}
+		});
+		
+		/*
+		 * Handles searching the FoodList by names of the FoodItems in it.
+		 * Example: Searching for 'yes' displays all FoodItems that have
+		 * the string 'yes' in it.
+		 */
+		foodListSearchBar.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				/*
+				 * Make the FoodData object that the search will be called on 
+				 * and add the current FoodItems to it.
+				 */
+				FoodData nameSearch = new FoodData();
+				for(FoodItem f: foodListItems) {
+					nameSearch.addFoodItem(f);
+				}
+				/*
+				 * Get all of the names that match and put them into a ListView
+				 * This is done by grabbing all of the FoodItems that meet the
+				 * search and adding their names to an ObservableList
+				 */
+				List<FoodItem> nameSearched = new ArrayList<FoodItem>();
+				nameSearched = nameSearch.filterByName(foodListSearchBar.getText());
+				List<String> nameSearchedNames = new ArrayList<String>();
+				for(FoodItem f: nameSearched) {
+					nameSearchedNames.add(f.getName());
+				}
+				Collections.sort(nameSearchedNames);
+				ObservableList<String> nameSearchObserve = FXCollections.observableArrayList(nameSearchedNames);
+				foodList.setItems(nameSearchObserve);
+			}
+		});
+		
+		mealListSearchBar.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				mealListItems.clear();
+				for(String s : mealListNames) {
+					for(FoodItem f: foodListItems) {
+						if(s.equals(f.getName())) {
+							mealListItems.add(f);
+						}
+					}
+				}
+				FoodData nameSearchMeal = new FoodData();
+				for(FoodItem f: mealListItems) {
+					nameSearchMeal.addFoodItem(f);
+				}
+				List<FoodItem> mealSearched = new ArrayList<FoodItem>();
+				mealSearched = nameSearchMeal.filterByName(mealListSearchBar.getText());
+				List<String> mealSearchedNames = new ArrayList<String>();
+				for(FoodItem f: mealSearched) {
+					mealSearchedNames.add(f.getName());
+				}
+				Collections.sort(mealSearchedNames);
+				ObservableList<String> mealSearchObserve = FXCollections.observableArrayList(mealSearchedNames);
+				mealList.setItems(mealSearchObserve);
 			}
 		});
 			
