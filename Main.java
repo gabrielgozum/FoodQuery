@@ -116,7 +116,7 @@ public class Main extends Application{
 		StackPane root = new StackPane();
 		Scene mainScene = new Scene(root, 600, 600);
 		StackPane filter = new StackPane();
-		Scene filterScene = new Scene(filter, 400, 180);
+		Scene filterScene = new Scene(filter, 600, 600);
 		
 		//Main (root) boxes
 		VBox VB1 = new VBox(); 	//Used in left Border
@@ -138,6 +138,8 @@ public class Main extends Application{
 		VBox FVBMin = new VBox();
 		VBox FVBLabelNames = new VBox();
 		VBox FVBMax = new VBox();
+		VBox FVBAddRules = new VBox();
+		VBox FVBRemoveRules = new VBox();
 		HBox FHBMainBox = new HBox();
 		
 		//All the buttons
@@ -146,6 +148,26 @@ public class Main extends Application{
 		Button rootBtn = new Button();			//changes back to root
 		Button addIndividual = new Button();	//Adds individual FoodItems
 		Button saveBtn = new Button();			//Saves the current FoodList
+		Button addCalRule = new Button();
+		Button removeCalRule = new Button();
+		Button addCarbRule = new Button();
+		Button removeCarbRule = new Button();
+		Button addFatRule = new Button();
+		Button removeFatRule = new Button();
+		Button addFiberRule = new Button();
+		Button removeFiberRule = new Button();
+		Button addProteinRule = new Button();
+		Button removeProteinRule = new Button();
+		addCalRule.setText("Add rule");
+		addCarbRule.setText("Add rule");
+		addFatRule.setText("Add rule");
+		addFiberRule.setText("Add rule");
+		addProteinRule.setText("Add rule");
+		removeCalRule.setText("Remove rule");
+		removeCarbRule.setText("Remove rule");
+		removeFatRule.setText("Remove rule");
+		removeFiberRule.setText("Remove rule");
+		removeProteinRule.setText("Remove rule");
 		saveBtn.setText("Save current food list");
 		addIndividual.setText("Add new item to food list");
 		rootBtn.setText("Apply filters and go back");
@@ -182,7 +204,9 @@ public class Main extends Application{
 		//Labels used on the filter scene
 		Label minimum = new Label("Minmum Value");
 		Label maximum = new Label("Maximum Value");
-		Label minMaxGap = new Label("		");	
+		Label minMaxGap = new Label("		");	//Used for aesthetic
+		Label addGap = new Label("		");
+		Label removeGap = new Label("		");
 		Label calFilter = new Label("<= Calories <= ");
 		Label carbFilter = new Label("<= Carbs <=");
 		Label fatFilter = new Label("<= Fat <=");
@@ -615,6 +639,12 @@ public class Main extends Application{
 			}
 		});
 		
+		/*
+		 * Extremly similar to the above foodListSearchBar. Added clearing
+		 * and adding the FoodItems to mealListItems otherwise the search 
+		 * results would come up blank everytime if done before a meal 
+		 * analysis where the FoodItems would be added to the mealListItems.
+		 */
 		mealListSearchBar.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -670,9 +700,15 @@ public class Main extends Application{
 		HB.getChildren().addAll(VB3, VB5, VB6);
 		
 		//The one box used in filters
-		FVBMin.getChildren().addAll(minimum, minCal, minCarbs, minFat, minFiber, minProtein, rootBtn);
-		FVBMax.getChildren().addAll(maximum, maxCal, maxCarbs, maxFat, maxFiber, maxProtein);
-		FHBMainBox.getChildren().addAll(FVBMin, FVBLabelNames, FVBMax);
+		FVBMin.getChildren().addAll(minimum, minCal, minCarbs, minFat, 
+				minFiber, minProtein, rootBtn);
+		FVBMax.getChildren().addAll(maximum, maxCal, maxCarbs, maxFat, 
+				maxFiber, maxProtein);
+		FVBAddRules.getChildren().addAll(addGap, addCalRule, addCarbRule, addFatRule, 
+				addFiberRule, addProteinRule);
+		FVBRemoveRules.getChildren().addAll(removeGap, removeCalRule, removeCarbRule, removeFatRule, 
+				removeFiberRule, removeProteinRule);
+		FHBMainBox.getChildren().addAll(FVBMin, FVBLabelNames, FVBMax, FVBAddRules, FVBRemoveRules);
 		
 		//Putting top level boxes in correct locations
 		mainBorderPanel.setTop(topLabel);
