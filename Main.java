@@ -59,6 +59,7 @@ public class Main extends Application{
 /////////////////////// TESTING FOOD DATA ///////////////////////////////
 		 
 		//Diego commented all this so I can test my own stuff.
+	    //Make sure we delete this before we submit
 		
 		
  		FoodData foodData = new FoodData();
