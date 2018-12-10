@@ -100,8 +100,7 @@ public class Main extends Application{
 		StackPane root = new StackPane();
 		Scene mainScene = new Scene(root, 600, 600);
 		StackPane filter = new StackPane();
-		Scene filterScene = new Scene(filter, 600, 600);
-		
+		Scene filterScene = new Scene(filter, 400, 180);
 		//Main (root) boxes
 		VBox VB1 = new VBox(); 	//Used in left Border
 		VBox VB2 = new VBox();	//Used in right border
@@ -119,13 +118,10 @@ public class Main extends Application{
 		HBox idBox = new HBox();
 		
 		//Filter boxes
-		HBox FHBMinMax = new HBox();
-		HBox FHBCal = new HBox();
-		HBox FHBCarb = new HBox();
-		HBox FHBFat = new HBox();
-		HBox FHBFiber = new HBox();
-		HBox FHBProtein = new HBox();
-		VBox FVB1 = new VBox();
+		VBox FVBMin = new VBox();
+		VBox FVBLabelNames = new VBox();
+		VBox FVBMax = new VBox();
+		HBox FHBMainBox = new HBox();
 		
 		//All the buttons
 		Button analyzeMeal = new Button(); 		//will calculate nutrition totals
@@ -168,17 +164,22 @@ public class Main extends Application{
 		Label mealAnalysis = new Label("Anaylzed Meal: ");
 		Label addFromList = new Label("Click from list to add to meal");
 		Label removeFromMeal = new Label("Click from meal list to remove");
+	
 		
 		
 		//Labels used on the filter scene
 		Label minimum = new Label("Minmum Value");
 		Label maximum = new Label("Maximum Value");
-		Label minMaxGap = new Label("							");	
-		Label calFilter = new Label("<= Calories <");
-		Label carbFilter = new Label("<= Carbohydrates <");
-		Label fatFilter = new Label("<= Fat <");
-		Label fiberFilter = new Label("<= Fiber <");
-		Label proteinFilter = new Label("<= Protein <");
+		Label minMaxGap = new Label("		");	
+		Label calFilter = new Label("<= Calories <= ");
+		Label carbFilter = new Label("<= Carbs <=");
+		Label fatFilter = new Label("<= Fat <=");
+		Label fiberFilter = new Label("<= Fiber <=");
+		Label proteinFilter = new Label("<= Protein <=");
+		FVBLabelNames.getChildren().addAll(minMaxGap, calFilter, carbFilter,
+				fatFilter, fiberFilter, proteinFilter);
+		FVBLabelNames.setSpacing(8);
+		FVBLabelNames.setPrefWidth(87);
 		
 		//TextFields for inputting own individual foods
 		TextField foodNameField = new TextField();
@@ -208,6 +209,7 @@ public class Main extends Application{
 		TextField maxFiber = new TextField();
 		TextField minProtein = new TextField();
 		TextField maxProtein = new TextField();
+	
 		
 		//Boxes for adding individual FoodItems
 		nameBox.getChildren().addAll(foodName, foodNameField);
@@ -218,8 +220,27 @@ public class Main extends Application{
 		fatBox.getChildren().addAll(foodFat, foodFatField);
 		idBox.getChildren().addAll(foodID, foodIDField);
 		
-		fileInput.setText("Enter your file name");
+		fileInput.setText("Enter your file name:");
 		analyzeMeal.setText("Click to analyze your meal");
+		
+		/*
+		 * Alerts that are shown throughout the GUI in the cases where users
+		 * might input values incorrectly, such as negative calories, or forget
+		 * a vital input.
+		 */
+		Alert negative = new Alert(AlertType.ERROR);
+		negative.setTitle("Negative Nutritonal Value Error");
+		negative.setContentText("A nutritional value can not be less than 0, "
+				+ "your nutrient has been set to 0.");
+		Alert notNumber = new Alert(AlertType.ERROR);
+		notNumber.setTitle("Alphanumeric Nutritional Value Error");
+		notNumber.setContentText("A nutrtional value has to be a number.");
+		Alert nameAlert = new Alert(AlertType.ERROR);
+		nameAlert.setTitle("Name Error");
+		nameAlert.setContentText("Name can't be null (remember to hit enter)");
+		Alert IDAlert = new Alert(AlertType.ERROR);
+		IDAlert.setTitle("ID Error");
+		IDAlert.setContentText("ID can't be null (remember to hit enter)");
 		
 		ListView<String> foodList = new ListView<String>();
 		ListView<String> mealList = new ListView<String>();
@@ -271,7 +292,7 @@ public class Main extends Application{
 				for(FoodItem f: mealListItems) {
 					totalCalories += f.getNutrientValue("calories");
 					mealCalories.setText("Total Calories: " + totalCalories);
-					totalCarbs += f.getNutrientValue("carbohydrates");
+					totalCarbs += f.getNutrientValue("carbohydrate");
 					mealCarbohydrates.setText("Total Carbs: " + totalCarbs);
 					totalFat += f.getNutrientValue("fat");
 					mealFat.setText("Total Fat: " + totalCarbs);
@@ -327,6 +348,7 @@ public class Main extends Application{
 				//prevents adding null items on empty ListView
 				if(foodList.getSelectionModel().getSelectedItem() != null) {
 					mealListNames.add(foodList.getSelectionModel().getSelectedItem());
+					Collections.sort(mealListNames);
 					ObservableList<String> mealListObserve = FXCollections.observableArrayList(mealListNames);
 					mealList.setItems(mealListObserve);
 				}
@@ -375,8 +397,9 @@ public class Main extends Application{
 		/*
 		 * Following TextFields handle taking in user data and storing them
 		 * in variables to make new FoodItem. Checks if the Fields are not
-		 * empty Strings. If nothing is put for nutritional values, default 
-		 * value of 0 is used.
+		 * empty Strings. If nothing is put for nutritional values or the
+		 * input value is negative, the default value of 0 is used. Also checks
+		 * that the input value is a number, and not a string or anything else.
 		 */
 		//Name case
 		foodNameField.setOnAction(new EventHandler<ActionEvent>(){
@@ -400,7 +423,16 @@ public class Main extends Application{
 			@Override
 			public void handle(ActionEvent event) {
 				if(!foodProteinField.getText().equals("")) {
-					newProtein = Double.parseDouble(foodProteinField.getText());
+					try {
+						newProtein = Double.parseDouble(foodProteinField.getText());
+						if(newProtein <0) {
+							newProtein = 0;
+							negative.showAndWait();
+						}
+					}
+					catch(NumberFormatException e) {
+						notNumber.showAndWait();
+					}
 				}		
 			}
 		});
@@ -409,7 +441,16 @@ public class Main extends Application{
 			@Override
 			public void handle(ActionEvent event) {
 				if(!foodFiberField.getText().equals("")) {
-					newFiber = Double.parseDouble(foodFiberField.getText());
+					try {
+						newFiber = Double.parseDouble(foodFiberField.getText());
+						if(newFiber < 0) {
+							newFiber = 0;
+							negative.showAndWait();
+						}
+					}
+					catch(NumberFormatException e) {
+						notNumber.showAndWait();
+					}
 				}
 			}
 		});
@@ -418,7 +459,17 @@ public class Main extends Application{
 			@Override
 			public void handle(ActionEvent event) {
 				if(!foodFatField.getText().equals("")) {
-					newFat = Double.parseDouble(foodFatField.getText());
+					try {
+						newFat = Double.parseDouble(foodFatField.getText());
+						if(newFat < 0) {
+							newFat = 0;
+							negative.showAndWait();
+						}
+					}
+					catch(NumberFormatException e) {
+						notNumber.showAndWait();
+					}
+	
 				}
 			}
 		});
@@ -427,7 +478,16 @@ public class Main extends Application{
 			@Override
 			public void handle(ActionEvent event) {
 				if(!foodCaloriesField.getText().equals("")) {
-					newCalorie = Double.parseDouble(foodCaloriesField.getText());
+					try {
+						newCalorie = Double.parseDouble(foodCaloriesField.getText());
+						if(newCalorie <0) {
+							newCalorie = 0;
+							negative.showAndWait();
+						}
+					}
+					catch(NumberFormatException e) {
+						notNumber.showAndWait();
+					}
 				}
 			}
 		});
@@ -436,7 +496,16 @@ public class Main extends Application{
 			@Override
 			public void handle(ActionEvent event) {
 				if(!foodCarbsField.getText().equals("")) {
-					newCarbs = Double.parseDouble(foodCarbsField.getText());
+					try {
+						newCarbs = Double.parseDouble(foodCarbsField.getText());
+						if(newCarbs < 0) {
+							newCarbs = 0;
+							negative.showAndWait();
+						}
+					}
+					catch(NumberFormatException e) {
+						notNumber.showAndWait();
+					}
 				}
 			}
 		});
@@ -451,15 +520,9 @@ public class Main extends Application{
 				 * the user.
 				 */
 				if(newID == null) {
-					Alert IDAlert = new Alert(AlertType.WARNING);
-					IDAlert.setTitle("ID Error");
-					IDAlert.setContentText("ID can't be null (remember to hit enter)");
 					IDAlert.showAndWait();
 				}
 				else if(newName == null) {
-					Alert nameAlert = new Alert(AlertType.WARNING);
-					nameAlert.setTitle("Name Error");
-					nameAlert.setContentText("Name can't be null (remember to hit enter)");
 					nameAlert.showAndWait();
 				}
 				//create the new FoodItem and add it to the lists
@@ -520,15 +583,13 @@ public class Main extends Application{
 		
 		//Put all the bottom VBoxes together
 		HB.getChildren().addAll(VB3, VB5, VB6);
+
 		
-		//All of the horizontal boxes used in filters
-		FHBMinMax.getChildren().addAll(minimum, minMaxGap, maximum);
-		FHBCal.getChildren().addAll(minCal, calFilter, maxCal);
-		FHBCarb.getChildren().addAll(minCarbs, carbFilter, maxCarbs);
-		FHBFat.getChildren().addAll(minFat, fatFilter, maxFat);
-		FHBFiber.getChildren().addAll(minFiber, fiberFilter, maxFiber);
-		FHBProtein.getChildren().addAll(minProtein, proteinFilter, maxProtein);
-		
+		//The one box used in filters
+		FVBMin.getChildren().addAll(minimum, minCal, minCarbs, minFat, minFiber, minProtein, rootBtn);
+		FVBMax.getChildren().addAll(maximum, maxCal, maxCarbs, maxFat, maxFiber, maxProtein);
+		FHBMainBox.getChildren().addAll(FVBMin, FVBLabelNames, FVBMax);
+
 		
 		//Putting top level boxes in correct locations
 		mainBorderPanel.setTop(topLabel);
@@ -541,9 +602,7 @@ public class Main extends Application{
 		 * Add all the horizontal boxes used in filters to the vertical box on filter
 		 * to make it look nice.
 		 */
-		FVB1.getChildren().addAll(FHBMinMax, FHBCal, FHBCarb, FHBFat, FHBFiber, FHBProtein);
-		filterBorderPanel.setCenter(FVB1);
-		filterBorderPanel.setBottom(rootBtn);
+		filterBorderPanel.setCenter(FHBMainBox);
 		filter.getChildren().add(filterBorderPanel);
 	primaryStage.setScene(mainScene);
 	primaryStage.show();
