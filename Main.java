@@ -454,16 +454,17 @@ public class Main extends Application{
 			public void handle(ActionEvent event) {
 			    boolean flag = true;
 				if(!foodNameField.getText().equals("")) {
-				    for(FoodItem f : foodListItems) {
+				    newName = foodNameField.getText();
+				   /* for(FoodItem f : foodListItems) {
 				        if(f.getName().equals(foodNameField.getText())) {
 				            //Not working yet, will work on later
 				            flag = false;
 				            dupName.showAndWait();
 				        }
-				    }
-				    if(flag) {
+				    }*/
+				    /*if(flag) {
 				        newName = foodNameField.getText();
-				    }
+				    }*/
 				}
 			}
 		});
