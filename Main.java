@@ -260,13 +260,21 @@ public class Main extends Application{
 		 * might input values incorrectly, such as negative calories, or forget
 		 * a vital input.
 		 */
+		Alert dupName = new Alert(AlertType.ERROR);
+		dupName.setTitle("Duplicate Name Error");
+		dupName.setContentText("Can't add an item with a duplicate "
+		                + "name to the food list.");
+		Alert dupID = new Alert(AlertType.ERROR);
+		dupID.setTitle("Duplicate ID Error");
+		dupID.setContentText("Can't add an item with a duplicate ID "
+		                + "to the food list.");
 		Alert negative = new Alert(AlertType.ERROR);
 		negative.setTitle("Negative Nutritonal Value Error");
 		negative.setContentText("A nutritional value can not be less than 0, "
 				+ "your nutrient has been set to 0.");
 		Alert notNumber = new Alert(AlertType.ERROR);
 		notNumber.setTitle("Alphanumeric Nutritional Value Error");
-		notNumber.setContentText("A nutrtional value has to be a number.");
+		notNumber.setContentText("A nutritional value has to be a number.");
 		Alert nameAlert = new Alert(AlertType.ERROR);
 		nameAlert.setTitle("Name Error");
 		nameAlert.setContentText("Name can't be null (remember to hit enter)");
@@ -444,8 +452,18 @@ public class Main extends Application{
 		foodNameField.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
+			    boolean flag = true;
 				if(!foodNameField.getText().equals("")) {
-					newName = foodNameField.getText();
+				    for(FoodItem f : foodListItems) {
+				        if(f.getName().equals(foodNameField.getText())) {
+				            //Not working yet, will work on later
+				            flag = false;
+				            dupName.showAndWait();
+				        }
+				    }
+				    if(flag) {
+				        newName = foodNameField.getText();
+				    }
 				}
 			}
 		});
