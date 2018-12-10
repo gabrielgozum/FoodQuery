@@ -53,6 +53,28 @@ public class Main extends Application{
 	private String newName;
 	private String newID;
 	
+	/*
+	 * Used in creating rules, filter(NutrientName) is the value associated
+	 * with the nutrient when being filtered. They are Strings because rules
+	 * are of type String, they get converted to doubles in filterByNutrient
+	 */
+	private String filterCalorie;
+	private String filterCarbs;
+	private String filterFat;
+	private String filterFiber;
+	private String filterProtein;
+	
+	private String calorieOperator;
+	private String carbOperator;
+	private String fatOperator;
+	private String fiberOperator;
+	private String proteinOperator;
+	
+	private String calorieRule;
+	private String carbRule;
+	private String fatRule;
+	private String fiberRule;
+	private String proteinRule;
 	
 	public static void main(String[] args) {
 		
@@ -136,9 +158,9 @@ public class Main extends Application{
 		HBox idBox = new HBox();
 		
 		//Filter boxes
-		VBox FVBMin = new VBox();
+		VBox FVBOperator = new VBox();
 		VBox FVBLabelNames = new VBox();
-		VBox FVBMax = new VBox();
+		VBox FVBValues = new VBox();
 		VBox FVBAddRules = new VBox();
 		VBox FVBRemoveRules = new VBox();
 		HBox FHBMainBox = new HBox();
@@ -147,8 +169,10 @@ public class Main extends Application{
 		Button analyzeMeal = new Button(); 		//will calculate nutrition totals
 		Button filterSceneBtn = new Button(); 	//changes to filter scene
 		Button rootBtn = new Button();			//changes back to root
+		Button applyBtn = new Button();			//changes back to root and filters
 		Button addIndividual = new Button();	//Adds individual FoodItems
 		Button saveBtn = new Button();			//Saves the current FoodList
+		//Used for adding and removing filter rules for each nutrient
 		Button addCalRule = new Button();
 		Button removeCalRule = new Button();
 		Button addCarbRule = new Button();
@@ -171,7 +195,8 @@ public class Main extends Application{
 		removeProteinRule.setText("Remove rule");
 		saveBtn.setText("Save current food list");
 		addIndividual.setText("Add new item to food list");
-		rootBtn.setText("Apply filters and go back");
+		rootBtn.setText("Go back without applying filters");
+		applyBtn.setText("Apply filters and go back");
 		filterSceneBtn.setText("Click to apply Filters");
 		analyzeMeal.setText("Click to analyze your meal");
 		
@@ -203,17 +228,17 @@ public class Main extends Application{
 		Label removeFromMeal = new Label("Click from meal list to remove");
 		
 		//Labels used on the filter scene
-		Label minimum = new Label("Minmum Value");
-		Label maximum = new Label("Maximum Value");
-		Label minMaxGap = new Label("		");	//Used for aesthetic
+		Label operator = new Label("Operator");
+		Label value = new Label("Value");
+		Label nutrientGap = new Label("		");	//Used for aesthetic
 		Label addGap = new Label("		");
 		Label removeGap = new Label("		");
-		Label calFilter = new Label("<= Calories <= ");
-		Label carbFilter = new Label("<= Carbs <=");
-		Label fatFilter = new Label("<= Fat <=");
-		Label fiberFilter = new Label("<= Fiber <=");
-		Label proteinFilter = new Label("<= Protein <=");
-		FVBLabelNames.getChildren().addAll(minMaxGap, calFilter, carbFilter,
+		Label calFilter = new Label(" Calories ");
+		Label carbFilter = new Label(" Carbs");
+		Label fatFilter = new Label(" Fat");
+		Label fiberFilter = new Label(" Fiber");
+		Label proteinFilter = new Label(" Protein");
+		FVBLabelNames.getChildren().addAll(nutrientGap, calFilter, carbFilter,
 				fatFilter, fiberFilter, proteinFilter);
 		FVBLabelNames.setSpacing(8);
 		FVBLabelNames.setPrefWidth(87);
@@ -235,16 +260,16 @@ public class Main extends Application{
 		mealListSearchBar.setPromptText("Search");
 		
 		//TextFields for applying filters
-		TextField minCal = new TextField();
-		TextField maxCal = new TextField();
-		TextField minCarbs = new TextField();
-		TextField maxCarbs = new TextField();
-		TextField minFat = new TextField();
-		TextField maxFat = new TextField();
-		TextField minFiber = new TextField();
-		TextField maxFiber = new TextField();
-		TextField minProtein = new TextField();
-		TextField maxProtein = new TextField();
+		TextField operatorCal = new TextField();
+		TextField filterValueCal = new TextField();
+		TextField operatorCarbs = new TextField();
+		TextField filterValueCarbs = new TextField();
+		TextField operatorFat = new TextField();
+		TextField filterValueFat = new TextField();
+		TextField operatorFiber = new TextField();
+		TextField filterValueFiber = new TextField();
+		TextField operatorProtein = new TextField();
+		TextField filterValueProtein = new TextField();
 		
 		//Boxes for adding individual FoodItems
 		nameBox.getChildren().addAll(foodName, foodNameField);
@@ -281,6 +306,9 @@ public class Main extends Application{
 		Alert IDAlert = new Alert(AlertType.ERROR);
 		IDAlert.setTitle("ID Error");
 		IDAlert.setContentText("ID can't be null (remember to hit enter)");
+		Alert invalidOperator = new Alert(AlertType.ERROR);
+		invalidOperator.setTitle("Operator Error");
+		invalidOperator.setContentText("The operator must be '==', '>=', or '<='.");
 		
 		/*
 		 * These are the Lists and ListViews that handle the FoodItem objects
@@ -432,10 +460,21 @@ public class Main extends Application{
 		
 		/*
 		 * When rootBtn is pressed, the scene changes to the main scene.
-		 * Filters will also be applied here.
+		 * Filters are not applied.
 		 */
 		rootBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
+			public void handle(ActionEvent event) {
+				primaryStage.setScene(mainScene);
+			}
+		});
+		
+		/*
+		 * When applyBtn is pressed, the scene changes to the main scene.
+		 * Filters are applied here as well.
+		 */
+		applyBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override 
 			public void handle(ActionEvent event) {
 				primaryStage.setScene(mainScene);
 			}
@@ -691,7 +730,86 @@ public class Main extends Application{
 				mealList.setItems(mealSearchObserve);
 			}
 		});
-			
+		
+		/*
+		 * Following lines check whether or not the user has inputted a correct
+		 * operator to be used in rules.
+		 */
+		//Calorie case
+		operatorCal.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if(operatorCal.getText().equals("==") || 
+						operatorCal.getText().equals("<=") ||
+						operatorCal.getText().equals(">=")) {
+					calorieOperator = operatorCal.getText();
+				}
+				else {
+					invalidOperator.showAndWait();
+				}
+			}
+		});
+		
+		//Carbohydrate case
+		operatorCarbs.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if(operatorCarbs.getText().equals("==") || 
+						operatorCarbs.getText().equals("<=") ||
+						operatorCarbs.getText().equals(">=")) {
+					carbOperator = operatorCarbs.getText();
+				}
+				else {
+					invalidOperator.showAndWait();
+				}
+			}
+		});
+		
+		//Fat case
+		operatorFat.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if(operatorFat.getText().equals("==") || 
+						operatorFat.getText().equals("<=") ||
+						operatorFat.getText().equals(">=")) {
+					fatOperator = operatorFat.getText();
+				}
+				else {
+					invalidOperator.showAndWait();
+				}
+			}
+		});
+		
+		//Fiber case
+		operatorFiber.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if(operatorFiber.getText().equals("==") || 
+						operatorFiber.getText().equals("<=") ||
+						operatorFiber.getText().equals(">=")) {
+					fiberOperator = operatorFiber.getText();
+				}
+				else {
+					invalidOperator.showAndWait();
+				}
+			}
+		});
+		
+		//Protein case
+		operatorProtein.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if(operatorProtein.getText().equals("==") || 
+						operatorProtein.getText().equals("<=") ||
+						operatorProtein.getText().equals(">=")) {
+					proteinOperator = operatorProtein.getText();
+				}
+				else {
+					invalidOperator.showAndWait();
+				}
+			}
+		});	
+		
 		//Left side of the main scene
 		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, 
 				addFromList, saveBtn, filterSceneBtn);
@@ -720,15 +838,15 @@ public class Main extends Application{
 		HB.getChildren().addAll(VB3, VB5, VB6);
 		
 		//The one box used in filters
-		FVBMin.getChildren().addAll(minimum, minCal, minCarbs, minFat, 
-				minFiber, minProtein, rootBtn);
-		FVBMax.getChildren().addAll(maximum, maxCal, maxCarbs, maxFat, 
-				maxFiber, maxProtein);
+		FVBOperator.getChildren().addAll(operator, operatorCal, operatorCarbs, operatorFat, 
+				operatorFiber, operatorProtein, rootBtn);
+		FVBValues.getChildren().addAll(value, filterValueCal, filterValueCarbs, filterValueFat, 
+				filterValueFiber, filterValueProtein, applyBtn);
 		FVBAddRules.getChildren().addAll(addGap, addCalRule, addCarbRule, addFatRule, 
 				addFiberRule, addProteinRule);
 		FVBRemoveRules.getChildren().addAll(removeGap, removeCalRule, removeCarbRule, removeFatRule, 
 				removeFiberRule, removeProteinRule);
-		FHBMainBox.getChildren().addAll(FVBMin, FVBLabelNames, FVBMax, FVBAddRules, FVBRemoveRules);
+		FHBMainBox.getChildren().addAll(FVBLabelNames, FVBOperator, FVBValues, FVBAddRules, FVBRemoveRules);
 		
 		//Putting top level boxes in correct locations
 		mainBorderPanel.setTop(topLabel);
