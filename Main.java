@@ -29,11 +29,22 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Main extends Application{
+	
+	/*
+	 * Used in the meal analysis, keeps track of the total values of each 
+	 * nutrient, initially set to 0, because the meal list will be empty.
+	 */
 	private double totalCalories = 0;
 	private double totalCarbs = 0;
 	private double totalFat = 0;
 	private double totalFiber = 0;
 	private double totalProtein = 0;
+	
+	/*
+	 * Used in creating a new FoodItem that the user inputs, each value is
+	 * initially set to 0 if user does not enter a value for a nutrient. The
+	 * name and the ID must be set however.
+	 */
 	private double newCalorie = 0;
 	private double newCarbs = 0;
 	private double newFat = 0;
@@ -96,11 +107,17 @@ public class Main extends Application{
 		BorderPane mainBorderPanel = new BorderPane();
 		BorderPane filterBorderPanel = new BorderPane();
 		
+		/*
+		 * 2 GUI Scenes, one handles most of the GUI and is considered
+		 * the 'main' one. The other one is for applying the search filters
+		 * for search queries.
+		 */
 		primaryStage.setTitle("FoodQuery and Meal Analysis");
 		StackPane root = new StackPane();
 		Scene mainScene = new Scene(root, 600, 600);
 		StackPane filter = new StackPane();
 		Scene filterScene = new Scene(filter, 400, 180);
+		
 		//Main (root) boxes
 		VBox VB1 = new VBox(); 	//Used in left Border
 		VBox VB2 = new VBox();	//Used in right border
@@ -127,17 +144,17 @@ public class Main extends Application{
 		Button analyzeMeal = new Button(); 		//will calculate nutrition totals
 		Button filterSceneBtn = new Button(); 	//changes to filter scene
 		Button rootBtn = new Button();			//changes back to root
-		Button addIndividual = new Button();
-		Button saveBtn = new Button();
+		Button addIndividual = new Button();	//Adds individual FoodItems
+		Button saveBtn = new Button();			//Saves the current FoodList
 		saveBtn.setText("Save current food list");
 		addIndividual.setText("Add new item to food list");
 		rootBtn.setText("Apply filters and go back");
 		filterSceneBtn.setText("Click to apply Filters");
+		analyzeMeal.setText("Click to analyze your meal");
 		
 		//Labels seen on the root scene
 		Label topLabel = new Label("FoodQuery and Meal Analysis");
 		topLabel.setFont(new Font("Arial", 30));
-		//Label individualFood = new Label("Add Food Manually: ");
 		Label fileInput = new Label();
 		Label foodName = new Label("Name: ");
 		Label foodProtein = new Label("Protein: ");
@@ -150,10 +167,7 @@ public class Main extends Application{
 		foodListLabel.setFont(new Font("Arial" , 15));
 		Label mealListLabel = new Label("Meal List");
 		mealListLabel.setFont(new Font("Arial" , 15));
-		
-		//Label foodFiltersLabel = new Label("Food Filters"); it was here, don't know why,
-		//might delete later
-		
+		fileInput.setText("Enter your file name:");
 		
 		//Labels for total nutrients
 		Label mealCalories = new Label("Total Calories: ");
@@ -164,8 +178,6 @@ public class Main extends Application{
 		Label mealAnalysis = new Label("Anaylzed Meal: ");
 		Label addFromList = new Label("Click from list to add to meal");
 		Label removeFromMeal = new Label("Click from meal list to remove");
-	
-		
 		
 		//Labels used on the filter scene
 		Label minimum = new Label("Minmum Value");
@@ -190,8 +202,7 @@ public class Main extends Application{
 		TextField foodFatField = new TextField();
 		TextField foodIDField = new TextField();
 		TextField fileInputField = new TextField();
-		
-		
+			
 		//TextFields for searching in the lists
 		TextField foodListSearchBar = new TextField();
 		foodListSearchBar.setPromptText("Search");
@@ -209,7 +220,6 @@ public class Main extends Application{
 		TextField maxFiber = new TextField();
 		TextField minProtein = new TextField();
 		TextField maxProtein = new TextField();
-	
 		
 		//Boxes for adding individual FoodItems
 		nameBox.getChildren().addAll(foodName, foodNameField);
@@ -219,10 +229,7 @@ public class Main extends Application{
 		carbohydrateBox.getChildren().addAll(foodCarbs, foodCarbsField);
 		fatBox.getChildren().addAll(foodFat, foodFatField);
 		idBox.getChildren().addAll(foodID, foodIDField);
-		
-		fileInput.setText("Enter your file name:");
-		analyzeMeal.setText("Click to analyze your meal");
-		
+			
 		/*
 		 * Alerts that are shown throughout the GUI in the cases where users
 		 * might input values incorrectly, such as negative calories, or forget
@@ -242,12 +249,22 @@ public class Main extends Application{
 		IDAlert.setTitle("ID Error");
 		IDAlert.setContentText("ID can't be null (remember to hit enter)");
 		
+		/*
+		 * These are the Lists and ListViews that handle the FoodItem objects
+		 * and their names. This is because the names are displayed to the
+		 * GUI, not the entire FoodItem, need a List for both the FoodItem
+		 * and the the names of them for this reason.
+		 */
 		ListView<String> foodList = new ListView<String>();
 		ListView<String> mealList = new ListView<String>();
 		List<String> foodListNames = new ArrayList<String>();
 		List<String> mealListNames = new ArrayList<String>();
 		List<FoodItem> foodListItems = new ArrayList<FoodItem>();
 		List<FoodItem> mealListItems = new ArrayList<FoodItem>();
+		mealList.setPrefWidth(100);
+		mealList.setPrefHeight(150);
+		foodList.setPrefWidth(100);
+		foodList.setPrefHeight(250);
 		
 		/*
 		 * When analyzeMeal is pressed, the total nutritional value of the meal
@@ -334,8 +351,6 @@ public class Main extends Application{
 			}
 		});
 		
-		foodList.setPrefWidth(100);
-		foodList.setPrefHeight(250);
 		//ObservableList<String> mealListObserve;
 		/*
 		 * When an individual item is clicked in foodList, it adds it to mealList.
@@ -355,6 +370,7 @@ public class Main extends Application{
 				
 			}
 		});
+		
 		/*
 		 * Handles removing items when an item is clicked on the meal list.
 		 */
@@ -371,9 +387,6 @@ public class Main extends Application{
 			}
 		});
 		
-		//For aesthetics
-		mealList.setPrefWidth(100);
-		mealList.setPrefHeight(150);
 		/*
 		 * When the filterSceneBtn is pressed, the scene changes to the filter
 		 * scene where the user can input their filters accordingly.
@@ -384,6 +397,7 @@ public class Main extends Application{
 				primaryStage.setScene(filterScene);
 			}
 		});
+		
 		/*
 		 * When rootBtn is pressed, the scene changes to the main scene.
 		 * Filters will also be applied here.
@@ -394,6 +408,7 @@ public class Main extends Application{
 				primaryStage.setScene(mainScene);
 			}
 		});
+		
 		/*
 		 * Following TextFields handle taking in user data and storing them
 		 * in variables to make new FoodItem. Checks if the Fields are not
@@ -410,6 +425,8 @@ public class Main extends Application{
 				}
 			}
 		});
+		
+		//ID case
 		foodIDField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -418,6 +435,7 @@ public class Main extends Application{
 				}
 			}
 		});
+		
 		//Protein case
 		foodProteinField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -436,6 +454,7 @@ public class Main extends Application{
 				}		
 			}
 		});
+		
 		//Fiber case
 		foodFiberField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -454,6 +473,7 @@ public class Main extends Application{
 				}
 			}
 		});
+		
 		//Fat case
 		foodFatField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -473,6 +493,7 @@ public class Main extends Application{
 				}
 			}
 		});
+		
 		//Calories case
 		foodCaloriesField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -491,6 +512,7 @@ public class Main extends Application{
 				}
 			}
 		});
+		
 		//Carbohydrate case
 		foodCarbsField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -509,8 +531,10 @@ public class Main extends Application{
 				}
 			}
 		});
+		
 		/*
-		 * Creates new FoodItem and adds it to the foodList
+		 * Creates new FoodItem and adds it to the foodList by taking all of
+		 * the user input data from the text fields for a custom FoodItem
 		 */
 		addIndividual.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -525,7 +549,7 @@ public class Main extends Application{
 				else if(newName == null) {
 					nameAlert.showAndWait();
 				}
-				//create the new FoodItem and add it to the lists
+				//create the new FoodItem and add it to the lists and sorts
 				else {
 					FoodItem newFood = new FoodItem(newID, newName); 
 					newFood.addNutrient("fat", newFat);
@@ -560,11 +584,13 @@ public class Main extends Application{
 		});
 			
 		//Left side of the main scene
-		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, addFromList, saveBtn, filterSceneBtn);
+		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, 
+				addFromList, saveBtn, filterSceneBtn);
 		VB1.setSpacing(10);
 		
 		//Right side of the main scene
-		VB2.getChildren().addAll(mealListLabel, mealListSearchBar, mealList, removeFromMeal, analyzeMeal);
+		VB2.getChildren().addAll(mealListLabel, mealListSearchBar, 
+				mealList, removeFromMeal, analyzeMeal);
 		VB2.setSpacing(10);
 		
 		//Used in bottom of main scene
@@ -583,13 +609,11 @@ public class Main extends Application{
 		
 		//Put all the bottom VBoxes together
 		HB.getChildren().addAll(VB3, VB5, VB6);
-
 		
 		//The one box used in filters
 		FVBMin.getChildren().addAll(minimum, minCal, minCarbs, minFat, minFiber, minProtein, rootBtn);
 		FVBMax.getChildren().addAll(maximum, maxCal, maxCarbs, maxFat, maxFiber, maxProtein);
 		FHBMainBox.getChildren().addAll(FVBMin, FVBLabelNames, FVBMax);
-
 		
 		//Putting top level boxes in correct locations
 		mainBorderPanel.setTop(topLabel);
@@ -598,13 +622,14 @@ public class Main extends Application{
 		mainBorderPanel.setBottom(HB);
 		mainBorderPanel.setCenter(VB4);
 		root.getChildren().add(mainBorderPanel);
+		
 		/*
 		 * Add all the horizontal boxes used in filters to the vertical box on filter
 		 * to make it look nice.
 		 */
 		filterBorderPanel.setCenter(FHBMainBox);
 		filter.getChildren().add(filterBorderPanel);
-	primaryStage.setScene(mainScene);
-	primaryStage.show();
+		primaryStage.setScene(mainScene);
+		primaryStage.show();
 	}
 }
