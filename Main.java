@@ -467,7 +467,7 @@ public class Main extends Application{
 				if(!foodProteinField.getText().equals("")) {
 					try {
 						newProtein = Double.parseDouble(foodProteinField.getText());
-						if(newProtein <0) {
+						if(newProtein < 0) {
 							newProtein = 0;
 							negative.showAndWait();
 						}
@@ -525,7 +525,7 @@ public class Main extends Application{
 				if(!foodCaloriesField.getText().equals("")) {
 					try {
 						newCalorie = Double.parseDouble(foodCaloriesField.getText());
-						if(newCalorie <0) {
+						if(newCalorie < 0) {
 							newCalorie = 0;
 							negative.showAndWait();
 						}
@@ -579,7 +579,7 @@ public class Main extends Application{
 					newFood.addNutrient("fat", newFat);
 					newFood.addNutrient("fiber", newFiber);
 					newFood.addNutrient("calories", newCalorie);
-					newFood.addNutrient("carbohydrates", newCarbs);
+					newFood.addNutrient("carbohydrate", newCarbs);
 					newFood.addNutrient("protein", newProtein);
 					foodListItems.add(newFood);
 					foodListNames.add(newFood.getName());
