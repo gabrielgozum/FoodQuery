@@ -70,58 +70,13 @@ public class Main extends Application{
 	private String fiberOperator;
 	private String proteinOperator;
 	
-	private String calorieRule;
-	private String carbRule;
-	private String fatRule;
-	private String fiberRule;
-	private String proteinRule;
+	private String calorieRule = "";
+	private String carbRule = "";
+	private String fatRule = "";
+	private String fiberRule = "";
+	private String proteinRule = "";
 	
 	public static void main(String[] args) {
-		
-/////////////////////// TESTING FOOD DATA ///////////////////////////////
-		 
-		//Diego commented all this so I can test my own stuff.
-	    //Make sure we delete this before we submit
-		
-		
- 		FoodData foodData = new FoodData();
-		foodData.loadFoodItems("application/foodItems.txt");
-		//ArrayList<FoodItem> foodList = (ArrayList<FoodItem>) foodData.getAllFoodItems();
-		//for(FoodItem i : foodList)
-		//	System.out.println(i.getName());
-		
-		//foodData.saveFoodItems("application/foodSaved.txt");
-		/*
-		foodData.getIndexes().put("calories", new BPTree<Double, FoodItem>(3));
-		foodData.getIndexes().put("carbs", new BPTree<Double, FoodItem>(3));
-		foodData.getIndexes().put("fat", new BPTree<Double, FoodItem>(3));
-		foodData.getIndexes().put("fiber", new BPTree<Double, FoodItem>(3));
-		foodData.getIndexes().put("protein", new BPTree<Double, FoodItem>(3));
-		String[] names = {"calories",
-				"carbs", "fat", "fiber", "protein"};
-		for (int i = 0; i < 5; i++){
-			BPTree<Double, FoodItem> tree = foodData.getIndexes().get(names[i]);
-			for (FoodItem fi : foodList){
-				tree.insert(fi.getNutrientValue(names[i]), fi);
-			}
-		}
-		BPTree<Double, FoodItem> tree = foodData.getIndexes().get(names[3]);
-		List<FoodItem> check = tree.rangeSearch(0.0, ">=");
-		System.out.println(foodList.size());
-		//System.out.println(tree.toString());
-		System.out.println(check.size());
-		for (FoodItem fi : check){
-			System.out.println(fi.getName() + " " + fi.getNutrientValue("fiber"));
-		}
-		*/
-		
-		
-		
-		
-		
-		
-//////////////////////////////////////////////////////////////////////////
-		
 		launch(args);
 
 	}
@@ -333,6 +288,7 @@ public class Main extends Application{
 		List<String> mealListNames = new ArrayList<String>();
 		List<FoodItem> foodListItems = new ArrayList<FoodItem>();
 		List<FoodItem> mealListItems = new ArrayList<FoodItem>();
+		List<String> rules = new ArrayList<String>();
 		mealList.setPrefWidth(100);
 		mealList.setPrefHeight(150);
 		foodList.setPrefWidth(100);
@@ -487,7 +443,42 @@ public class Main extends Application{
 		applyBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override 
 			public void handle(ActionEvent event) {
+				rules.clear();
+				if(!calorieRule.equals("")) {
+					rules.add(calorieRule);
+				}
+				if(!carbRule.equals("")) {
+					rules.add(carbRule);
+				}
+				if(!fatRule.equals("")) {
+					rules.add(fatRule);
+				}
+				if(!fiberRule.equals("")) {
+					rules.add(fiberRule);
+				}
+				if(!proteinRule.equals("")) {
+					rules.add(proteinRule);
+				}
+				for(String s: rules) {
+					System.out.println(s);
+				}
+				FoodData filtering = new FoodData();
+				for(FoodItem f: foodListItems) {
+					filtering.addFoodItem(f);
+				}
+				List<FoodItem> filteredFoods = new ArrayList<FoodItem>();
+				filteredFoods = filtering.filterByNutrients(rules);
+				List<String> filteredNames = new ArrayList<String>();
+				for(FoodItem f : filteredFoods) {
+					filteredNames.add(f.getName());
+				}
+				Collections.sort(filteredNames);
+				for(String s: filteredNames) {
+					System.out.println(s);
+				}
+				ObservableList<String> filterNamesObserve = FXCollections.observableArrayList(filteredNames);
 				primaryStage.setScene(mainScene);
+				foodList.setItems(filterNamesObserve);
 			}
 		});
 		
@@ -825,6 +816,189 @@ public class Main extends Application{
 		//Top side of the main scene
 		HB1.getChildren().addAll(spacingTop, topLabel);
 		HB1.setSpacing(0);
+		/*
+		 * Following lines handle taking in the value that the the filter
+		 * will use in conjunction with the operator to make rules. The value
+		 * must be a positive double. 
+		 */
+		//Calorie case
+		filterValueCal.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				String value = filterValueCal.getText();
+				try {
+					double valueDouble = Double.parseDouble(value);
+					if(valueDouble < 0) {
+						negative.showAndWait();
+					}
+					filterCalorie = value;
+				}
+				catch(NumberFormatException e) {
+					notNumber.showAndWait();
+				}
+			}
+		});
+		
+		//Carbohydrate case
+		filterValueCarbs.setOnAction(new EventHandler<ActionEvent>() {
+			@Override 
+			public void handle(ActionEvent event) {
+				String value = filterValueCarbs.getText();
+				try {
+					double valueDouble = Double.parseDouble(value);
+					if(valueDouble < 0) {
+						negative.showAndWait();
+					}
+					filterCarbs = value;
+				}
+				catch(NumberFormatException e) {
+					notNumber.showAndWait();
+				}
+			}
+		});
+		
+		//Fat case
+		filterValueFat.setOnAction(new EventHandler<ActionEvent>() {
+			@Override 
+			public void handle(ActionEvent event) {
+				String value = filterValueFat.getText();
+				try {
+					double valueDouble = Double.parseDouble(value);
+					if(valueDouble < 0) {
+						negative.showAndWait();
+					}
+					filterFat = value;
+				}
+				catch(NumberFormatException e) {
+					notNumber.showAndWait();
+				}
+			}
+		});
+		
+		//Fiber case
+		filterValueFiber.setOnAction(new EventHandler<ActionEvent>() {
+			@Override 
+			public void handle(ActionEvent event) {
+				String value = filterValueFiber.getText();
+				try {
+					double valueDouble = Double.parseDouble(value);
+					if(valueDouble < 0) {
+						negative.showAndWait();
+					}
+					filterFiber = value;
+				}
+				catch(NumberFormatException e) {
+					notNumber.showAndWait();
+				}
+			}	
+		});
+		
+		//Protein case
+		filterValueProtein.setOnAction(new EventHandler<ActionEvent>() {
+			@Override 
+			public void handle(ActionEvent event) {
+				String value = filterValueProtein.getText();
+				try {
+					double valueDouble = Double.parseDouble(value);
+					if(valueDouble < 0) {
+						negative.showAndWait();
+					}
+					filterProtein = value;
+				}
+				catch(NumberFormatException e) {
+					notNumber.showAndWait();
+				}
+			}	
+		});
+		
+		/*
+		 * Following lines describe the Add rule buttons for each nutrient
+		 * which creates the rule by putting the nutrient name with the 
+		 * operator and respective value
+		 */
+		//Calorie case
+		addCalRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				calorieRule = "calories " + calorieOperator + " " + filterCalorie;
+			}
+		});
+		
+		//Carbohydrate case
+		addCarbRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				carbRule = "carbohydrate " + carbOperator + " " + filterCarbs;
+			}
+		});
+		
+		//Fat case
+		addFatRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				fatRule = "fat " + fatOperator + " " + filterFat;
+			}
+		});
+
+		//Fiber case
+		addFiberRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				fiberRule = "fiber " + fiberOperator + "  " + filterFiber;
+			}
+		});
+		
+		//Protein case
+		addProteinRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				proteinRule = "protein " + proteinOperator + " " + filterProtein;
+			}
+		});
+		
+		/*
+		 * Following lines handle when the rule is removed, it is just set to 
+		 * an empty string that will be checked when filters are applied.
+		 */
+		//Calorie case
+		removeCalRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				calorieRule = "";
+			}
+		});
+		
+		//Carbohydrate case
+		removeCarbRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				carbRule = "";
+			}
+		});
+		
+		//Fat case
+		removeFatRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				fatRule = "";
+			}
+		});
+		
+		//Fiber case
+		removeFiberRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				fiberRule = "";
+			}
+		});
+		
+		//Protein case
+		removeProteinRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				proteinRule = "";
+			}
+		});
 		//Left side of the main scene
 		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, 
 				addFromList, saveBtn, filterSceneBtn);
