@@ -94,7 +94,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 			}
 			input.close();
 			
-			//if the file is not found, prompt user.
+		// If the file is not found, prompt user.
 		} catch (FileNotFoundException e) {
 			Alert fileAlert = new Alert(AlertType.WARNING);
 			fileAlert.setTitle("File Error");
@@ -115,6 +115,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     {
     	HashMap<String, Double> nutrients = f.getNutrients();
     	
+    	// Add each nutrient/value pair in HashMap to nutrient's BPTree
     	for(String i : nutrients.keySet())
     	{
     		indexes.get(i).insert(nutrients.get(i), f);
@@ -174,23 +175,24 @@ public class FoodData implements FoodDataADT<FoodItem> {
     public void saveFoodItems(String filename) {
         try
         {
+        	// Initialize file writing structures
 	    	File file = new File(filename);
 	    	BufferedWriter out = new BufferedWriter(new FileWriter(file));
 	    	
 	    	Comparator<FoodItem> foodComparator = (a, b) -> a.getName().compareTo(b.getName());  // Sort by name comparator
 	    	ArrayList<FoodItem> sortedNames = (ArrayList<FoodItem>) foodItemList.stream().sorted(foodComparator).collect(Collectors.toList()); //ArrayList of sorted names
 	    	
-	    	String line; //line to be appended to saved file
+	    	String line; // line to be appended to saved file
 	        for(FoodItem i : sortedNames)
 	        {
-	        	line = i.getID() + "," + i.getName(); //add ID and name to line
+	        	line = i.getID() + "," + i.getName(); // add ID and name to line
 	        	
-	        	HashMap<String, Double> nutrients = i.getNutrients(); //add nutrients to line
+	        	// add nutrients to line
+	        	HashMap<String, Double> nutrients = i.getNutrients(); 
 	        	for(String j : nutrients.keySet())
 	        	{
 	        		line = line + "," + j + "," + Double.toString(nutrients.get(j));
 	        	}
-	        	
 	        	out.write(line);
 	        	out.newLine();
 	        }
