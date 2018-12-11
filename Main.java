@@ -149,6 +149,7 @@ public class Main extends Application{
 		VBox VB5 = new VBox(); 	//Used in bottom border in HB
 		VBox VB6 = new VBox(); 	//Used in bottom border in HB
 		HBox HB = new HBox();	//Used in bottom border
+		HBox HB1 = new HBox();  //Used in top border
 		HBox nameBox = new HBox();
 		HBox proteinBox = new HBox();
 		HBox fiberBox = new HBox();
@@ -201,8 +202,11 @@ public class Main extends Application{
 		analyzeMeal.setText("Click to analyze your meal");
 		
 		//Labels seen on the root scene
+		Label spacingTop = new Label("            ");
+		spacingTop.setFont(new Font("Arial", 30));
 		Label topLabel = new Label("FoodQuery and Meal Analysis");
 		topLabel.setFont(new Font("Arial", 30));
+		topLabel.setUnderline(true);
 		Label fileInput = new Label();
 		Label foodName = new Label("Name:     ");
 		Label foodProtein = new Label("Protein:   ");
@@ -818,6 +822,9 @@ public class Main extends Application{
 			}
 		});	
 		
+		//Top side of the main scene
+		HB1.getChildren().addAll(spacingTop, topLabel);
+		HB1.setSpacing(0);
 		//Left side of the main scene
 		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, 
 				addFromList, saveBtn, filterSceneBtn);
@@ -857,7 +864,7 @@ public class Main extends Application{
 		FHBMainBox.getChildren().addAll(FVBLabelNames, FVBOperator, FVBValues, FVBAddRules, FVBRemoveRules);
 		
 		//Putting top level boxes in correct locations
-		mainBorderPanel.setTop(topLabel);
+		mainBorderPanel.setTop(HB1);
 		mainBorderPanel.setLeft(VB1);
 		mainBorderPanel.setRight(VB2);
 		mainBorderPanel.setBottom(HB);
