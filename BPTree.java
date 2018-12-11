@@ -293,6 +293,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         
         // Reference to the next leaf node
         LeafNode next;
+        LeafNode prev;
         
         /**
          * Package constructor
@@ -359,6 +360,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	values.subList(start, end).clear();
         	keys.subList(start, end).clear();
         	split.next = next;
+        	split.prev = this;
+        	if (next != null){
+        		next.prev = split;
+        	}
         	next = split;
         	
             return split;
@@ -375,6 +380,16 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             	return list;
             }else{
             	LeafNode curr = this;
+            	// test
+            	while (curr.prev != null){
+            		if (curr.prev.getFirstLeafKey().equals(curr.getFirstLeafKey())){
+            			curr = curr.prev;
+            			continue;
+            		}else{
+            			break;
+            		}
+            	}
+            	// end test
             	while (curr != null){
             		Iterator<K> keysIt = curr.keys.iterator();
             		Iterator<V> valuesIt = curr.values.iterator();

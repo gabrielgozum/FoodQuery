@@ -61,7 +61,7 @@ public class Main extends Application{
 			}
 		}
 		BPTree<Double, FoodItem> tree = foodData.getIndexes().get(names[3]);
-		List<FoodItem> check = tree.rangeSearch(0.0, ">=");
+		List<FoodItem> check = tree.rangeSearch(-1.0, ">=");
 		System.out.println(foodList.size());
 		//System.out.println(tree.toString());
 		System.out.println(check.size());
