@@ -280,7 +280,10 @@ public class Main extends Application{
 		Alert invalidOperator = new Alert(AlertType.ERROR);
 		invalidOperator.setTitle("Operator Error");
 		invalidOperator.setContentText("The operator must be '==', '>=', or '<='.");
-		
+		Alert invalidRule = new Alert(AlertType.ERROR);
+		invalidRule.setTitle("Rule Error");
+		invalidRule.setContentText("Your rule is invalid, you had a null or empty value"
+				+ " or operator.");
 		/*
 		 * These are the Lists and ListViews that handle the FoodItem objects
 		 * and their names. This is because the names are displayed to the
@@ -971,21 +974,34 @@ public class Main extends Application{
 		/*
 		 * Following lines describe the Add rule buttons for each nutrient
 		 * which creates the rule by putting the nutrient name with the 
-		 * operator and respective value
+		 * operator and respective value. Also make sures that the
+		 * operator or value is not null.
 		 */
 		//Calorie case
 		addCalRule.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				calorieRule = "calories " + calorieOperator + " " + filterCalorie;
-			}
+				if(calorieOperator == null || filterCalorie == null)   {
+					invalidRule.showAndWait();
+					calorieRule = "";
+				}
+				else {
+					calorieRule = "calories " + calorieOperator + " " + filterCalorie;
+				}
+			}	
 		});
 		
 		//Carbohydrate case
 		addCarbRule.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				carbRule = "carbohydrate " + carbOperator + " " + filterCarbs;
+				if(carbOperator == null || filterCarbs == null) {
+					invalidRule.showAndWait();
+					carbRule = "";
+				}
+				else {
+					carbRule = "carbohydrate " + carbOperator + " " + filterCarbs;
+				}	
 			}
 		});
 		
@@ -993,7 +1009,13 @@ public class Main extends Application{
 		addFatRule.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				fatRule = "fat " + fatOperator + " " + filterFat;
+				if(fatOperator == null || filterFat == null) {
+					invalidRule.showAndWait();
+					fatRule = "";
+				}
+				else {
+					fatRule = "fat " + fatOperator + " " + filterFat;
+				}
 			}
 		});
 
@@ -1001,7 +1023,13 @@ public class Main extends Application{
 		addFiberRule.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				fiberRule = "fiber " + fiberOperator + " " + filterFiber;
+				if(fiberOperator == null || filterFiber == null) {
+					invalidRule.showAndWait();
+					fiberRule = "";
+				}
+				else {
+					fiberRule = "fiber " + fiberOperator + " " + filterFiber;
+				}
 			}
 		});
 		
@@ -1009,7 +1037,13 @@ public class Main extends Application{
 		addProteinRule.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				proteinRule = "protein " + proteinOperator + " " + filterProtein;
+				if(proteinOperator == null || filterProtein == null) {
+					invalidRule.showAndWait();
+					proteinRule = "";
+				}
+				else {
+					proteinRule = "protein " + proteinOperator + " " + filterProtein;
+				}
 			}
 		});
 		
