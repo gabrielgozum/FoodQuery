@@ -3,6 +3,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,6 +36,13 @@ public class FoodData implements FoodDataADT<FoodItem> {
     public FoodData() {
         indexes = new HashMap<String, BPTree<Double, FoodItem>>();
         foodItemList = new ArrayList<FoodItem>();
+  
+        //BPTrees for nutrients
+        indexes.put("calories", new BPTree<Double, FoodItem>(3));
+        indexes.put("carbohydrate", new BPTree<Double, FoodItem>(3));
+        indexes.put("fiber", new BPTree<Double, FoodItem>(3));
+        indexes.put("fat", new BPTree<Double, FoodItem>(3));
+        indexes.put("protein", new BPTree<Double, FoodItem>(3));
     }
     
     protected HashMap<String, BPTree<Double, FoodItem>> getIndexes(){
@@ -78,16 +89,36 @@ public class FoodData implements FoodDataADT<FoodItem> {
 				if(!skipLine)
 				{
 					foodItemList.add(cur); // adds food item to LinkedList
+					nutritionInsert(cur);  // adds nutrients to index
 				}
 			}
 			input.close();
 			
+			//if the file is not found, prompt user.
 		} catch (FileNotFoundException e) {
-			System.out.println("The file: " + filePath + " was not found"); //TODO: print an error box
+			Alert fileAlert = new Alert(AlertType.WARNING);
+			fileAlert.setTitle("File Error");
+			fileAlert.setContentText("The file: " + filePath + 
+					" was not found (Check your spelling?)");
+			fileAlert.showAndWait();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}      
+    }
+    
+    /**
+     * Private helper method to add nutritional data to index
+     * @param f
+     */
+    private void nutritionInsert(FoodItem f)
+    {
+    	HashMap<String, Double> nutrients = f.getNutrients();
+    	
+    	for(String i : nutrients.keySet())
+    	{
+    		indexes.get(i).insert(nutrients.get(i), f);
+    	}
     }
 
     /*
@@ -96,8 +127,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public List<FoodItem> filterByName(String substring) {
-        // TODO : Complete
-        return null;
+        return foodItemList.stream().filter(x -> x.getName().toLowerCase()
+            .contains(substring.toLowerCase())).collect(Collectors.toList());
     }
 
     /*
@@ -106,53 +137,18 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public List<FoodItem> filterByNutrients(List<String> rules) {
-    	  /**
-         * Gets all the food items that fulfill ALL the provided rules
-         *
-         * Format of a rule:
-         *     "<nutrient> <comparator> <value>"
-         * 
-         * Definition of a rule:
-         *     A rule is a string which has three parts separated by a space:
-         *         1. <nutrient>: Name of one of the 5 nutrients [CASE-INSENSITIVE]
-         *         2. <comparator>: One of the following comparison operators: <=, >=, ==
-         *         3. <value>: a double value
-         * 
-         * Note:
-         *     1. Multiple rules can contain the same nutrient.
-         *         E.g. ["calories >= 50.0", "calories <= 200.0", "fiber == 2.5"]
-         *     2. A FoodItemADT object MUST satisfy ALL the provided rules i
-         *        to be returned in the filtered list.
-         *
-         * @param rules list of rules
-         * @return list of filtered food items; if no food item matched, return empty list
-         */
-    	ArrayList<FoodItem> filtered = new ArrayList<FoodItem>();
+    	List<FoodItem> filtered = new ArrayList<FoodItem>(foodItemList); //make a copy of foodItemList
     	String[] ruleArray;
-    	for(String r : rules)
-    	{
+    	for(String r : rules) {
     		ruleArray = r.split(" ");
     		ruleArray[0] = ruleArray[0].toLowerCase(); // case insensitive for nutrient
-    		switch(ruleArray[1])
-    		{
-    			case ">=":
-    			{
-    				// TODO: >=
-    			}
-    			case "<=":
-    			{
-    				// TODO <=
-    			}
-    			case "==":
-    			{
-    				
-    			}
-    			default:
-    				// NOTHING
-    		}		
+    		BPTree<Double, FoodItem> bpTree = indexes.get(ruleArray[0]);
+    		double doubleValue = Double.parseDouble(ruleArray[2]);
+    		List<FoodItem> list = bpTree.rangeSearch(doubleValue, ruleArray[1]);
+    		filtered = filtered.stream().filter(x -> list.contains(x)).collect(Collectors.toList());
     	}
     	
-    	return null;
+    	return filtered; 
     }
 
     /*
@@ -200,7 +196,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	        }
 	        out.close();
         } catch (IOException e) {
-        	System.out.println("The file could not be named: " + filename); //TODO: print in error box
+        	Alert fileAlert = new Alert(AlertType.WARNING);
+			fileAlert.setTitle("File Error");
+			fileAlert.setContentText("The file: " + filename + " could not be named (Check your spelling?)");
+			fileAlert.showAndWait();
         }
     }
 }
