@@ -672,7 +672,7 @@ public class Main extends Application{
 		});
 		
 		/*
-		 * Saves the current FoodList being displayed to foodSaved.txt. 
+		 * Saves the current FoodList being displayed to foodSaved.csv. 
 		 * Gets every foodItem in the foodList and puts it into a new FoodData
 		 * object to read from to write to the new file.
 		 */
