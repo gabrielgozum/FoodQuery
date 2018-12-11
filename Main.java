@@ -491,19 +491,9 @@ public class Main extends Application{
 		foodNameField.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent event) {
-			    boolean flag = true;
-				if(!foodNameField.getText().equals("")) {
-				    newName = foodNameField.getText();
-				   /* for(FoodItem f : foodListItems) {
-				        if(f.getName().equals(foodNameField.getText())) {
-				            //Not working yet, will work on later
-				            flag = false;
-				            dupName.showAndWait();
-				        }
-				    }*/
-				    /*if(flag) {
-				        newName = foodNameField.getText();
-				    }*/
+			    String testStr = foodNameField.getText();
+				if(!testStr.equals("")) {
+				   newName = testStr;
 				}
 			}
 		});
@@ -622,9 +612,20 @@ public class Main extends Application{
 			@Override
 			public void handle(ActionEvent event) {
 				/*
-				 * If the ID or name is null, don't make a new FoodItem, prompt
+				 * If the ID or name is null, or matches an existing 
+				 * item's ID or name, don't make a new FoodItem, prompt
 				 * the user.
 				 */
+			    for(FoodItem f : foodListItems) {
+                    if(newID == f.getID()) {
+                        dupID.showAndWait();
+                        return;
+                    }
+                    if(newName == f.getName()) {
+                        dupName.showAndWait();
+                        return;
+                    }
+                }
 				if(newID == null) {
 					IDAlert.showAndWait();
 				}
