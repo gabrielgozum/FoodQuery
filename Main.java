@@ -58,7 +58,6 @@ public class Main extends Application{
 	 * with the nutrient when being filtered. They are Strings because rules
 	 * are of type String, they get converted to doubles in filterByNutrient
 	 */
-	
 	private String filterCalorie;
 	private String filterCarbs;
 	private String filterFat;
@@ -71,15 +70,11 @@ public class Main extends Application{
 	private String fiberOperator;
 	private String proteinOperator;
 	
-
 	private String calorieRule = "";
 	private String carbRule = "";
 	private String fatRule = "";
 	private String fiberRule = "";
 	private String proteinRule = "";
-	
-	
-	
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -167,6 +162,7 @@ public class Main extends Application{
 		Label topLabel = new Label("FoodQuery and Meal Analysis");
 		topLabel.setFont(new Font("Arial", 30));
 		topLabel.setUnderline(true);
+		Label searchHelp = new Label("Perform an empty search \nto get full list back.");
 		Label fileInput = new Label();
 		Label foodName = new Label("Name:     ");
 		Label foodProtein = new Label("Protein:   ");
@@ -388,7 +384,6 @@ public class Main extends Application{
 			}
 		});
 		
-		//ObservableList<String> mealListObserve;
 		/*
 		 * When an individual item is clicked in foodList, it adds it to mealList.
 		 * This does this by adding the clicked item to a list, then turning that list 
@@ -452,6 +447,7 @@ public class Main extends Application{
 		applyBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override 
 			public void handle(ActionEvent event) {
+				//Clear the rules to make sure they are applied correctly
 				rules.clear();
 				if(!calorieRule.equals("")) {
 					rules.add(calorieRule);
@@ -468,13 +464,12 @@ public class Main extends Application{
 				if(!proteinRule.equals("")) {
 					rules.add(proteinRule);
 				}
-				for(String s: rules) {
-					System.out.println(s);
-				}
+				//Make a FoodData object with all FoodItems
 				FoodData filtering = new FoodData();
 				for(FoodItem f: foodListItems) {
 					filtering.addFoodItem(f);
 				}
+				//Put the BPTrees and nutrients in the FoodData object
 				filtering.getIndexes().put("calories", new BPTree<Double,FoodItem>(3));
 				filtering.getIndexes().put("carbohydrate", new BPTree<Double, FoodItem>(3));
 				filtering.getIndexes().put("fat", new BPTree<Double, FoodItem>(3));
@@ -488,12 +483,14 @@ public class Main extends Application{
 						tree.insert(fi.getNutrientValue(names[i]), fi);
 					}
 				}
+				//Start filtering the FoodData object
 				List<FoodItem> filteredFoods = new ArrayList<FoodItem>();
 				filteredFoods = filtering.filterByNutrients(rules);
 				List<String> filteredNames = new ArrayList<String>();
 				for(FoodItem f : filteredFoods) {
 					filteredNames.add(f.getName());
 				}
+				//Display the sorted filtered list
 				Collections.sort(filteredNames);
 				ObservableList<String> filterNamesObserve = FXCollections.observableArrayList(filteredNames);
 				primaryStage.setScene(mainScene);
@@ -690,17 +687,58 @@ public class Main extends Application{
 		/*
 		 * Handles searching the FoodList by names of the FoodItems in it.
 		 * Example: Searching for 'yes' displays all FoodItems that have
-		 * the string 'yes' in it.
+		 * the string 'yes' in it. Works with filtered lists.
 		 */
 		foodListSearchBar.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				/*
+				 * This section is copied from the applying filters button. It
+				 * allows a filtered list to be searched by applying the rules
+				 * to create a filteredList, then using that filteredList in
+				 * filterByNames.
+				 */
+				rules.clear();
+				if(!calorieRule.equals("")) {
+					rules.add(calorieRule);
+				}
+				if(!carbRule.equals("")) {
+					rules.add(carbRule);
+				}
+				if(!fatRule.equals("")) {
+					rules.add(fatRule);
+				}
+				if(!fiberRule.equals("")) {
+					rules.add(fiberRule);
+				}
+				if(!proteinRule.equals("")) {
+					rules.add(proteinRule);
+				}
+				FoodData filtering = new FoodData();
+				for(FoodItem f: foodListItems) {
+					filtering.addFoodItem(f);
+				}
+				filtering.getIndexes().put("calories", new BPTree<Double,FoodItem>(3));
+				filtering.getIndexes().put("carbohydrate", new BPTree<Double, FoodItem>(3));
+				filtering.getIndexes().put("fat", new BPTree<Double, FoodItem>(3));
+				filtering.getIndexes().put("fiber", new BPTree<Double, FoodItem>(3));
+				filtering.getIndexes().put("protein", new BPTree<Double, FoodItem>(3));
+				String[] names = {"calories",
+				"carbohydrate", "fat", "fiber", "protein"};
+				for (int i = 0; i < 5; i++){
+					BPTree<Double, FoodItem> tree = filtering.getIndexes().get(names[i]);
+					for (FoodItem fi : filtering.getAllFoodItems()){
+						tree.insert(fi.getNutrientValue(names[i]), fi);
+					}
+				}
+				List<FoodItem> filteredFoods = new ArrayList<FoodItem>();
+				filteredFoods = filtering.filterByNutrients(rules);
+				/*
 				 * Make the FoodData object that the search will be called on 
 				 * and add the current FoodItems to it.
 				 */
 				FoodData nameSearch = new FoodData();
-				for(FoodItem f: foodListItems) {
+				for(FoodItem f: filteredFoods) {
 					nameSearch.addFoodItem(f);
 				}
 				/*
@@ -1020,7 +1058,7 @@ public class Main extends Application{
 		});
 		
 		//Left side of the main scene
-		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, 
+		VB1.getChildren().addAll(foodListLabel, searchHelp, foodListSearchBar, foodList, 
 				addFromList, saveBtn, filterSceneBtn);
 		VB1.setSpacing(10);
 		
