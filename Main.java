@@ -98,7 +98,7 @@ public class Main extends Application{
 		StackPane root = new StackPane();
 		Scene mainScene = new Scene(root, 600, 600);
 		StackPane filter = new StackPane();
-		Scene filterScene = new Scene(filter, 600, 600);
+		Scene filterScene = new Scene(filter, 580, 250);
 		
 		//Main (root) boxes
 		VBox VB1 = new VBox(); 	//Used in left Border
@@ -124,6 +124,7 @@ public class Main extends Application{
 		VBox FVBAddRules = new VBox();
 		VBox FVBRemoveRules = new VBox();
 		HBox FHBMainBox = new HBox();
+		HBox FHBBottomBox = new HBox();
 		
 		//All the buttons
 		Button analyzeMeal = new Button(); 		//will calculate nutrition totals
@@ -208,6 +209,10 @@ public class Main extends Application{
 		Label fatFilter = new Label(" Fat");
 		Label fiberFilter = new Label(" Fiber");
 		Label proteinFilter = new Label(" Protein");
+		Label filterDescribe = new Label(" Filter your search by typing one of the operators '==',"
+				+ "' <=', or '>= then the value you wish to use that \n operator on with the respective nutrient."
+				+ " Then click the 'Add Rule' button. To remove a rule, hit the \n 'Remove Rule'"
+				+ " button. Remember to hit the apply button at the end.");
 		FVBLabelNames.getChildren().addAll(nutrientGap, calFilter, carbFilter,
 				fatFilter, fiberFilter, proteinFilter);
 		FVBLabelNames.setSpacing(8);
@@ -1064,7 +1069,9 @@ public class Main extends Application{
 		 * Add all the horizontal boxes used in filters to the vertical box on filter
 		 * to make it look nice.
 		 */
+		FHBBottomBox.getChildren().add(filterDescribe);
 		filterBorderPanel.setCenter(FHBMainBox);
+		filterBorderPanel.setTop(FHBBottomBox);
 		filter.getChildren().add(filterBorderPanel);
 		primaryStage.setScene(mainScene);
 		primaryStage.show();
