@@ -390,28 +390,55 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             		}
             	}
             	// end test
-            	while (curr != null){
-            		Iterator<K> keysIt = curr.keys.iterator();
-            		Iterator<V> valuesIt = curr.values.iterator();
-            		while (keysIt.hasNext()){
-            			K currKey = keysIt.next();
-            			V currValue = valuesIt.next();
-            			switch(comparator){
-            				case ">=": 
-            					if (currKey.compareTo(key) >= 0) list.add(currValue);
-            					break;
-            				case "==":
-            					if (currKey.compareTo(key) == 0) list.add(currValue);
-            					break;
-            				case "<=":
-            					if (currKey.compareTo(key) <= 0) list.add(currValue);
-            					break;
-            			}	
+            	if (comparator.equals("<=")){
+            		while (curr != null){
+	            		Iterator<K> keysIt = curr.keys.iterator();
+	            		Iterator<V> valuesIt = curr.values.iterator();
+	            		while (keysIt.hasNext()){
+	            			K currKey = keysIt.next();
+	            			V currValue = valuesIt.next();
+	            			switch(comparator){
+	            				case ">=": 
+	            					if (currKey.compareTo(key) >= 0) list.add(currValue);
+	            					break;
+	            				case "==":
+	            					if (currKey.compareTo(key) == 0) list.add(currValue);
+	            					break;
+	            				case "<=":
+	            					if (currKey.compareTo(key) <= 0) list.add(currValue);
+	            					break;
+	            			}	
+	            		}
+	            		if(curr.prev != null){
+	            			curr = curr.prev;
+	            		}else{
+	            			break;
+	            		}
             		}
-            		curr = curr.next;
+            	}else {
+            		while (curr != null){
+	            		Iterator<K> keysIt = curr.keys.iterator();
+	            		Iterator<V> valuesIt = curr.values.iterator();
+	            		while (keysIt.hasNext()){
+	            			K currKey = keysIt.next();
+	            			V currValue = valuesIt.next();
+	            			switch(comparator){
+	            				case ">=": 
+	            					if (currKey.compareTo(key) >= 0) list.add(currValue);
+	            					break;
+	            				case "==":
+	            					if (currKey.compareTo(key) == 0) list.add(currValue);
+	            					break;
+	            				case "<=":
+	            					if (currKey.compareTo(key) <= 0) list.add(currValue);
+	            					break;
+	            			}	
+	            		}
+	            		curr = curr.next;
+            		}
             	}
-            	return list;
             }
+            	return list;
         }
         
     } // End of class LeafNode
