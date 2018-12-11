@@ -470,6 +470,19 @@ public class Main extends Application{
 				for(FoodItem f: foodListItems) {
 					filtering.addFoodItem(f);
 				}
+				filtering.getIndexes().put("calories", new BPTree<Double,FoodItem>(3));
+				filtering.getIndexes().put("carbohydrate", new BPTree<Double, FoodItem>(3));
+				filtering.getIndexes().put("fat", new BPTree<Double, FoodItem>(3));
+				filtering.getIndexes().put("fiber", new BPTree<Double, FoodItem>(3));
+				filtering.getIndexes().put("protein", new BPTree<Double, FoodItem>(3));
+				String[] names = {"calories",
+				"carbohydrate", "fat", "fiber", "protein"};
+				for (int i = 0; i < 5; i++){
+					BPTree<Double, FoodItem> tree = filtering.getIndexes().get(names[i]);
+					for (FoodItem fi : filtering.getAllFoodItems()){
+						tree.insert(fi.getNutrientValue(names[i]), fi);
+					}
+				}
 				List<FoodItem> filteredFoods = new ArrayList<FoodItem>();
 				filteredFoods = filtering.filterByNutrients(rules);
 				List<String> filteredNames = new ArrayList<String>();
@@ -477,9 +490,6 @@ public class Main extends Application{
 					filteredNames.add(f.getName());
 				}
 				Collections.sort(filteredNames);
-				for(String s: filteredNames) {
-					System.out.println(s);
-				}
 				ObservableList<String> filterNamesObserve = FXCollections.observableArrayList(filteredNames);
 				primaryStage.setScene(mainScene);
 				foodList.setItems(filterNamesObserve);
@@ -948,7 +958,7 @@ public class Main extends Application{
 		addFiberRule.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				fiberRule = "fiber " + fiberOperator + "  " + filterFiber;
+				fiberRule = "fiber " + fiberOperator + " " + filterFiber;
 			}
 		});
 		
@@ -1003,6 +1013,7 @@ public class Main extends Application{
 				proteinRule = "";
 			}
 		});
+		
 		//Left side of the main scene
 		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, 
 				addFromList, saveBtn, filterSceneBtn);
