@@ -219,11 +219,18 @@ public class Main extends Application{
 		
 		//Labels for total nutrients
 		Label mealCalories = new Label("Total Calories: ");
+		mealCalories.setFont(new Font("Arial", 20));
 		Label mealCarbohydrates = new Label("Total Carbs: ");
+		mealCarbohydrates.setFont(new Font("Arial", 20));
 		Label mealFat = new Label("Total Fat: ");
+		mealFat.setFont(new Font("Arial", 20));
 		Label mealFiber = new Label("Total Fiber: ");
+		mealFiber.setFont(new Font("Arial", 20));
 		Label mealProtein = new Label("Total Protein: ");
-		Label mealAnalysis = new Label("Anaylzed Meal: ");
+		mealProtein.setFont(new Font("Arial", 20));
+		Label mealAnalysis = new Label("Anaylzed Meal:");
+		mealAnalysis.setFont(new Font("Arial", 30));
+		mealAnalysis.setUnderline(true);
 		Label addFromList = new Label("Click from list to add to meal");
 		Label removeFromMeal = new Label("Click from meal list to remove");
 		
