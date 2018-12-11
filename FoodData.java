@@ -142,6 +142,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	for(String r : rules) {
     		ruleArray = r.split(" ");
     		ruleArray[0] = ruleArray[0].toLowerCase(); // case insensitive for nutrient
+    		System.out.println(ruleArray[0]);
     		BPTree<Double, FoodItem> bpTree = indexes.get(ruleArray[0]);
     		double doubleValue = Double.parseDouble(ruleArray[2]);
     		List<FoodItem> list = bpTree.rangeSearch(doubleValue, ruleArray[1]);
