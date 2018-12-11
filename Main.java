@@ -58,6 +58,7 @@ public class Main extends Application{
 	 * with the nutrient when being filtered. They are Strings because rules
 	 * are of type String, they get converted to doubles in filterByNutrient
 	 */
+	
 	private String filterCalorie;
 	private String filterCarbs;
 	private String filterFat;
@@ -77,9 +78,11 @@ public class Main extends Application{
 	private String fiberRule = "";
 	private String proteinRule = "";
 	
+	
+	
+	
 	public static void main(String[] args) {
 		launch(args);
-
 	}
 	public void start(Stage primaryStage) {
 		//Different BorderPanes for each scene
