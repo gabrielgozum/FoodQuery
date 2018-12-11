@@ -683,7 +683,7 @@ public class Main extends Application{
 				for(FoodItem f: foodListItems) {
 					writeFile.addFoodItem(f);
 				}
-				writeFile.saveFoodItems("foodSaved.txt");
+				writeFile.saveFoodItems("foodSaved.csv");
 			}
 		});
 		
