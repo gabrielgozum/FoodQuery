@@ -34,10 +34,11 @@ public class FoodData implements FoodDataADT<FoodItem> {
      * Public constructor
      */
     public FoodData() {
+    	// initialize global variables
         indexes = new HashMap<String, BPTree<Double, FoodItem>>();
         foodItemList = new ArrayList<FoodItem>();
   
-        //BPTrees for nutrients
+        // BPTrees for nutrients
         indexes.put("calories", new BPTree<Double, FoodItem>(3));
         indexes.put("carbohydrate", new BPTree<Double, FoodItem>(3));
         indexes.put("fiber", new BPTree<Double, FoodItem>(3));
@@ -45,6 +46,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
         indexes.put("protein", new BPTree<Double, FoodItem>(3));
     }
     
+    /**
+     * Protected helper method to returns the HashMap Index
+     * @return
+     */
     protected HashMap<String, BPTree<Double, FoodItem>> getIndexes(){
     	return this.indexes;
     }
@@ -56,29 +61,31 @@ public class FoodData implements FoodDataADT<FoodItem> {
     public void loadFoodItems(String filePath) {
     	try 
     	{
-			File file = new File(filePath);
+    		// Initialize file and scanner objects
+			File file = new File(filePath); 
 			Scanner input = new Scanner(file);
-			FoodItem cur = null; //FoodItem to be added to List
+			
+			FoodItem cur = null; // FoodItem to be added to List
 			boolean skipLine = false; // used for incorrect format
 			
 			while(input.hasNextLine()) {
 				String line = input.nextLine();
 				try 
 				{
-					String[] data = line.split(",", 12); //split csv line into separate strings
+					String[] data = line.split(",", 12); // split csv line into separate strings
 					skipLine = false; // initialize skipLine to false
 
 					cur = new FoodItem(data[0], data[1]); // adds food item with id and name
 					
 					for(int i = 2; i < data.length; i = i + 2)
 					{
-							if(data[i].isEmpty() || data[i+1].isEmpty()) // check data is there
+							if(data[i].isEmpty() || data[i+1].isEmpty()) // check if index of array empty
 							{
 								skipLine = true;
 							}
 							else
 							{
-								cur.addNutrient(data[i], Double.parseDouble(data[i+1])); //add each nutrient
+								cur.addNutrient(data[i], Double.parseDouble(data[i+1])); // add each nutrient
 							}
 					}
 				} catch (Exception e) // accounts for ArrayOutOfBounds and Double.parseInt exceptions for incorrect data
@@ -138,13 +145,20 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public List<FoodItem> filterByNutrients(List<String> rules) {
-    	List<FoodItem> filtered = new ArrayList<FoodItem>(foodItemList); //make a copy of foodItemList
+    	// copy foodItemList
+    	List<FoodItem> filtered = new ArrayList<FoodItem>(foodItemList); 
     	String[] ruleArray;
+    	
+    	// iterate over inputed rules List
     	for(String r : rules) {
-    		ruleArray = r.split(" ");
-    		ruleArray[0] = ruleArray[0].toLowerCase(); // case insensitive for nutrient
+    		ruleArray = r.split(" "); // slit array into individual strings
+    		ruleArray[0] = ruleArray[0].toLowerCase(); // case insensitive for nutrients
+    		
+    		// obtain nutrient and value pai
     		BPTree<Double, FoodItem> bpTree = indexes.get(ruleArray[0]);
     		double doubleValue = Double.parseDouble(ruleArray[2]);
+    		
+    		// create a list of FoodItems corresponding to filter
     		List<FoodItem> list = bpTree.rangeSearch(doubleValue, ruleArray[1]);
     		filtered = filtered.stream().filter(x -> list.contains(x)).collect(Collectors.toList());
     	}
