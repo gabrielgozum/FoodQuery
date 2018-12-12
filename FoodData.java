@@ -16,10 +16,16 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
+ * Filename: FoodData.java
+ * Project: p5 (final project)
+ * 
  * This class represents the backend for managing all 
  * the operations associated with FoodItems
  * 
  * @author sapan (sapan@cs.wisc.edu)
+ * Contributors: Desmond Fung, Jarred Hanson, Gabriel Gozum
+ * 
+ * No known bugs.
  */
 public class FoodData implements FoodDataADT<FoodItem> {
     

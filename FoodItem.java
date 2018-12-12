@@ -4,9 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * This class represents a food item with all its properties.
+ * Filename: FoodItem.java
+ * Project: p5 (final project)
  * 
- * @author 
+ * This class represents a food item with all its properties and
+ * methods for accessing those properties. The class is used as 
+ * a format for food items to be arranged in the BPTree.
+ * 
+ * @author Desmond Fung, Jarred Hanson, Gabriel Gozum
+ * 
+ * No known bugs.
  */
 public class FoodItem {
     // The name of the food item.

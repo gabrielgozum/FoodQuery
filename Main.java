@@ -30,6 +30,20 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+/**
+ * Filename: Main.java
+ * Project: p5 (final project)
+ * 
+ * This class represents the JavaFx GUI portion of the project.
+ * Here, all the functionality and initializations are performed,
+ * which operate on the back-end of FoodData and BPTree.
+ * 
+ * @author Diego Fratta
+ * 
+ * No known bugs.
+ *
+ */
+
 public class Main extends Application{
 	
 	//Keeps track of how many FoodItems are being displayed
