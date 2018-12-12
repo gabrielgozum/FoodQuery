@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javafx.application.Application;
@@ -20,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -29,6 +31,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Main extends Application{
+	
+	//Keeps track of how many FoodItems are being displayed
+	private int count = 0;
 	
 	/*
 	 * Used in the meal analysis, keeps track of the total values of each 
@@ -162,7 +167,8 @@ public class Main extends Application{
 		Label topLabel = new Label("FoodQuery and Meal Analysis");
 		topLabel.setFont(new Font("Arial", 30));
 		topLabel.setUnderline(true);
-		Label searchHelp = new Label("Perform an empty search \nto get full list back.");
+		//Label searchHelp = new Label("Perform an empty search \nto get full list back.");
+		//searchHelp.setFont(new Font("Arial", 8));
 		Label fileInput = new Label();
 		Label foodName = new Label("Name:     ");
 		Label foodProtein = new Label("Protein:   ");
@@ -172,6 +178,7 @@ public class Main extends Application{
 		Label foodFat = new Label("  Fat:                       ");
 		Label foodID = new Label("  ID:                        ");
 		Label foodListLabel = new Label("Food List");
+		Label foodListCount = new Label(count + " food items displayed");
 		foodListLabel.setFont(new Font("Arial" , 15));
 		Label mealListLabel = new Label("Meal List");
 		mealListLabel.setFont(new Font("Arial" , 15));
@@ -296,6 +303,8 @@ public class Main extends Application{
 		List<String> mealListNames = new ArrayList<String>();
 		List<FoodItem> foodListItems = new ArrayList<FoodItem>();
 		List<FoodItem> mealListItems = new ArrayList<FoodItem>();
+		//Keep tracks of what is currently displayed to the GUI
+		List<FoodItem> displayedItems = new ArrayList<FoodItem>();
 		List<String> rules = new ArrayList<String>();
 		mealList.setPrefWidth(100);
 		mealList.setPrefHeight(150);
@@ -366,8 +375,6 @@ public class Main extends Application{
 		fileInputField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				foodListItems.clear();
-				foodListNames.clear();
 				FoodData fileReadIn = new FoodData();	//create FoodData object to read file
 				fileReadIn.loadFoodItems(fileInputField.getText()); //Load file in
 				//Get an observable list of FoodItems
@@ -378,12 +385,15 @@ public class Main extends Application{
 					if(!f.getName().equals("")) {	//make sure empty entries don't make it in
 						foodListNames.add(f.getName());
 						foodListItems.add(f);
+						displayedItems.add(f);
 					}
 				}
 				//Make the list of foodItemNames into an ObservableList to be displayed.
 				ObservableList<String> displayFood = FXCollections.observableArrayList(foodListNames);
 				Collections.sort(displayFood);	//sort the list in alphabetical order
 				foodList.setItems(displayFood);
+				count = foodListNames.size();
+				foodListCount.setText(count + " food items displayed");
 			}
 		});
 		
@@ -490,14 +500,18 @@ public class Main extends Application{
 				List<FoodItem> filteredFoods = new ArrayList<FoodItem>();
 				filteredFoods = filtering.filterByNutrients(rules);
 				List<String> filteredNames = new ArrayList<String>();
+				displayedItems.clear();
 				for(FoodItem f : filteredFoods) {
 					filteredNames.add(f.getName());
+					displayedItems.add(f);
 				}
 				//Display the sorted filtered list
 				Collections.sort(filteredNames);
 				ObservableList<String> filterNamesObserve = FXCollections.observableArrayList(filteredNames);
 				primaryStage.setScene(mainScene);
 				foodList.setItems(filterNamesObserve);
+				count = filterNamesObserve.size();
+				foodListCount.setText(count + " food items displayed");
 			}
 		});
 		
@@ -663,27 +677,36 @@ public class Main extends Application{
 					newFood.addNutrient("protein", newProtein);
 					foodListItems.add(newFood);
 					foodListNames.add(newFood.getName());
+					displayedItems.add(newFood);
 					Collections.sort(foodListNames);
 					ObservableList<String> foodListObserve = FXCollections.observableArrayList(foodListNames);
 					foodList.setItems(foodListObserve);
+					count = foodListObserve.size();
+					foodListCount.setText(count + " food items displayed");
 				}
-				
 			}
 		});
 		
 		/*
-		 * Saves the current FoodList being displayed to foodSaved.csv. 
-		 * Gets every foodItem in the foodList and puts it into a new FoodData
-		 * object to read from to write to the new file.
+		 * Saves the current FoodList being displayed to a filepath of users
+		 * choice. Gets every foodItem in the foodList and puts it 
+		 * into a new FoodData object to read from to write to the new file.
 		 */
 		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				FoodData writeFile = new FoodData();
-				for(FoodItem f: foodListItems) {
+				for(FoodItem f: displayedItems) {
 					writeFile.addFoodItem(f);
 				}
-				writeFile.saveFoodItems("foodSaved.csv");
+				//Prompt user
+				TextInputDialog getFilePath = new TextInputDialog();
+				getFilePath.setHeaderText("Input Filepath");
+				getFilePath.setContentText("Please enter the filepath you wish to save to");
+				Optional<String> filePath = getFilePath.showAndWait();
+				if(filePath.isPresent()) {
+					writeFile.saveFoodItems(filePath.get());
+				}
 			}
 		});
 		
@@ -752,12 +775,16 @@ public class Main extends Application{
 				List<FoodItem> nameSearched = new ArrayList<FoodItem>();
 				nameSearched = nameSearch.filterByName(foodListSearchBar.getText());
 				List<String> nameSearchedNames = new ArrayList<String>();
+				displayedItems.clear();
 				for(FoodItem f: nameSearched) {
 					nameSearchedNames.add(f.getName());
+					displayedItems.add(f);
 				}
 				Collections.sort(nameSearchedNames);
 				ObservableList<String> nameSearchObserve = FXCollections.observableArrayList(nameSearchedNames);
 				foodList.setItems(nameSearchObserve);
+				count = nameSearchObserve.size();
+				foodListCount.setText(count + " food items displayed");
 			}
 		});
 		
@@ -1092,8 +1119,8 @@ public class Main extends Application{
 		});
 		
 		//Left side of the main scene
-		VB1.getChildren().addAll(foodListLabel, searchHelp, foodListSearchBar, foodList, 
-				addFromList, saveBtn, filterSceneBtn);
+		VB1.getChildren().addAll(foodListLabel, foodListSearchBar, foodList, 
+				foodListCount, addFromList, saveBtn, filterSceneBtn);
 		VB1.setSpacing(10);
 		
 		//Right side of the main scene
