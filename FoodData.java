@@ -129,19 +129,25 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	}
     }
 
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#filterByName(java.lang.String)
+    /**
+     * filterByNutrients gets all the food items that have name containing the substring.
+     * 
+     * @param substring substring to be searched
+     * @return list of filtered food items; if no food item matched, return empty list
      */
     @Override
     public List<FoodItem> filterByName(String substring) {
-        return foodItemList.stream().filter(x -> x.getName().toLowerCase()
+        //turn foodItemList into a stream to filter the list and check if any food item matched 
+        return foodItemList.stream().filter(x -> x.getName().toLowerCase() 
             .contains(substring.toLowerCase())).collect(Collectors.toList());
     }
 
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#filterByNutrients(java.util.List)
+    /**
+     * filterByNutrients gets all the food items that fulfill aLL the provided rules
+     * and return them in a list
+     * 
+     * @param rules a FoodItemADT object must satisfy
+     * @return list of filtered food items; if no food item matched, return empty list
      */
     @Override
     public List<FoodItem> filterByNutrients(List<String> rules) {

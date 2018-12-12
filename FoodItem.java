@@ -65,7 +65,7 @@ public class FoodItem {
     }
 
     /**
-     * Returns the value of the given nutrient for this food item. 
+     * @return the value of the given nutrient for this food item. 
      * If not present, then returns 0.
      */
     public double getNutrientValue(String name) {
