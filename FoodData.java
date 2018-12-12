@@ -154,7 +154,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     		ruleArray = r.split(" "); // slit array into individual strings
     		ruleArray[0] = ruleArray[0].toLowerCase(); // case insensitive for nutrients
     		
-    		// obtain nutrient and value pai
+    		// obtain nutrient and value pair
     		BPTree<Double, FoodItem> bpTree = indexes.get(ruleArray[0]);
     		double doubleValue = Double.parseDouble(ruleArray[2]);
     		
